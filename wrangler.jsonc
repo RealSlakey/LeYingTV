@@ -7,9 +7,7 @@
   },
   "assets": {
     "directory": ".",
-    "binding": "ASSETS",
     "not_found_handling": "single-page-application"
   },
-  "compatibility_flags": ["nodejs_compat"],
-  "exclude_patterns": ["node_modules/**", ".git/**", ".github/**", "Dockerfile", "docker-compose.yml"]
+  "compatibility_flags": ["nodejs_compat"]
 }
