@@ -120,6 +120,8 @@ function initAPICheckboxes() {
 
 // 添加成人API列表
 function addAdultAPI() {
+    // 黄色内容过滤已强制开启，不再添加成人API
+    return;
     // 仅在隐藏设置为false时添加成人API组
     if (!HIDE_BUILTIN_ADULT_APIS && (localStorage.getItem('yellowFilterEnabled') === 'false')) {
         const container = document.getElementById('apiCheckboxes');
@@ -176,29 +178,32 @@ function checkAdultAPIsSelected() {
     const hasAdultSelected = adultBuiltinCheckboxes.length > 0 || customApiCheckboxes.length > 0;
 
     const yellowFilterToggle = document.getElementById('yellowFilterToggle');
-    const yellowFilterContainer = yellowFilterToggle.closest('div').parentNode;
-    const filterDescription = yellowFilterContainer.querySelector('p.filter-description');
-
-    // 如果选择了成人API，禁用黄色内容过滤器
-    if (hasAdultSelected) {
-        yellowFilterToggle.checked = false;
-        yellowFilterToggle.disabled = true;
-        localStorage.setItem('yellowFilterEnabled', 'false');
-
-        // 添加禁用样式
-        yellowFilterContainer.classList.add('filter-disabled');
-
-        // 修改描述文字
-        if (filterDescription) {
-            filterDescription.innerHTML = '<strong class="text-pink-300">选中黄色资源站时无法启用此过滤</strong>';
-        }
-
-        // 移除提示信息（如果存在）
-        const existingTooltip = yellowFilterContainer.querySelector('.filter-tooltip');
-        if (existingTooltip) {
-            existingTooltip.remove();
-        }
+    if (!yellowFilterToggle) {
+        // 开关已被移除，跳过相关逻辑
     } else {
+        const yellowFilterContainer = yellowFilterToggle.closest('div').parentNode;
+        const filterDescription = yellowFilterContainer.querySelector('p.filter-description');
+
+        // 如果选择了成人API，禁用黄色内容过滤器
+        if (hasAdultSelected) {
+            yellowFilterToggle.checked = false;
+            yellowFilterToggle.disabled = true;
+            localStorage.setItem('yellowFilterEnabled', 'false');
+
+            // 添加禁用样式
+            yellowFilterContainer.classList.add('filter-disabled');
+
+            // 修改描述文字
+            if (filterDescription) {
+                filterDescription.innerHTML = '<strong class="text-pink-300">选中黄色资源站时无法启用此过滤</strong>';
+            }
+
+            // 移除提示信息（如果存在）
+            const existingTooltip = yellowFilterContainer.querySelector('.filter-tooltip');
+            if (existingTooltip) {
+                existingTooltip.remove();
+            }
+        } else {
         // 启用黄色内容过滤器
         yellowFilterToggle.disabled = false;
         yellowFilterContainer.classList.remove('filter-disabled');
@@ -739,7 +744,7 @@ async function search() {
         }
 
         // 处理搜索结果过滤：如果启用了黄色内容过滤，则过滤掉分类含有敏感内容的项目
-        const yellowFilterEnabled = localStorage.getItem('yellowFilterEnabled') === 'true';
+        const yellowFilterEnabled = true; // 强制开启黄色内容过滤
         if (yellowFilterEnabled) {
             const banned = ['伦理片', '福利', '里番动漫', '门事件', '萝莉少女', '制服诱惑', '国产传媒', 'cosplay', '黑丝诱惑', '无码', '日本无码', '有码', '日本有码', 'SWAG', '网红主播', '色情片', '同性片', '福利视频', '福利片'];
             allResults = allResults.filter(item => {
