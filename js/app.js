@@ -42,6 +42,15 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.setItem('hasInitializedDefaults', 'true');
     }
 
+    // 兜底：如果 selectedAPIs 为空（例如被脏数据污染），强制恢复默认
+    if (!selectedAPIs || selectedAPIs.length === 0) {
+        selectedAPIs = ["tyyszy", "bfzy", "dyttzy", "ruyi"];
+        localStorage.setItem('selectedAPIs', JSON.stringify(selectedAPIs));
+        initAPICheckboxes();
+        updateSelectedApiCount();
+        showToast('已自动恢复默认视频源', 'info');
+    }
+
     // 设置黄色内容过滤器开关初始状态
     const yellowFilterToggle = document.getElementById('yellowFilterToggle');
     if (yellowFilterToggle) {
