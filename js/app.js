@@ -944,20 +944,13 @@ function showCanvasPlayer(url) {
     iframe.src = '/player/canvas-player.html?url=' + encodeURIComponent(url);
     document.body.appendChild(iframe);
 
-    // 悬浮关闭按钮
-    const closeBtn = document.createElement('button');
-    closeBtn.id = 'CanvasPlayerCloseBtn';
-    closeBtn.innerHTML = '&times;';
-    closeBtn.className = 'fixed top-4 right-4 z-50 w-10 h-10 flex items-center justify-center bg-black/70 hover:bg-red-600 text-white text-2xl rounded-full transition-colors cursor-pointer';
-    closeBtn.onclick = hideCanvasPlayer;
-    document.body.appendChild(closeBtn);
+    // 关闭按钮已在 canvas-player.html 的控制栏内
 }
 
 function hideCanvasPlayer() {
     const iframe = document.getElementById('CanvasPlayerFrame');
     if (iframe) iframe.remove();
-    const closeBtn = document.getElementById('CanvasPlayerCloseBtn');
-    if (closeBtn) closeBtn.remove();
+
     document.getElementById('resultsArea').classList.remove('hidden');
     const detailModal = document.getElementById('modal');
     if (detailModal) detailModal.classList.add('hidden');
@@ -991,9 +984,7 @@ function closeVideoPlayer(home = false) {
     videoPlayerFrame = document.getElementById('VideoPlayerFrame');
     if (videoPlayerFrame) {
         videoPlayerFrame.remove();
-        // 移除关闭按钮
-        const closeBtn = document.getElementById('VideoPlayerCloseBtn');
-        if (closeBtn) closeBtn.remove();
+        // 关闭按钮已在 player 页面内
         // 恢复搜索结果显示
         document.getElementById('resultsArea').classList.remove('hidden');
         // 关闭播放器时也隐藏详情弹窗
