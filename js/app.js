@@ -54,6 +54,16 @@ document.addEventListener('DOMContentLoaded', function () {
         adFilterToggle.checked = localStorage.getItem(PLAYER_CONFIG.adFilteringStorage) !== 'false'; // 默认为true
     }
 
+    // 设置新标签页打开开关初始状态
+    const newTabToggle = document.getElementById('newTabToggle');
+    if (newTabToggle) {
+        const stored = localStorage.getItem(NEW_TAB_CONFIG.storageKey);
+        if (stored === null) {
+            localStorage.setItem(NEW_TAB_CONFIG.storageKey, String(NEW_TAB_CONFIG.defaultValue));
+        }
+        newTabToggle.checked = stored === null ? NEW_TAB_CONFIG.defaultValue : stored === 'true';
+    }
+
     // 设置事件监听器
     setupEventListeners();
 
@@ -568,6 +578,14 @@ function setupEventListeners() {
             localStorage.setItem(PLAYER_CONFIG.adFilteringStorage, e.target.checked);
         });
     }
+
+    // 新标签页打开开关事件
+    const newTabToggle = document.getElementById('newTabToggle');
+    if (newTabToggle) {
+        newTabToggle.addEventListener('change', function (e) {
+            localStorage.setItem(NEW_TAB_CONFIG.storageKey, e.target.checked);
+        });
+    }
 }
 
 // 重置搜索区域
@@ -998,8 +1016,55 @@ function playVideo(url, vod_name, sourceCode, episodeIndex = 0, vodId = '') {
         }
     }
 
-    const teslaUrl = 'https://tesla-player.com/?url=' + encodeURIComponent(url);
-    window.open(teslaUrl, '_blank');
+    const encodedUrl = encodeURIComponent(url);
+
+    const newTabEnabled = localStorage.getItem(NEW_TAB_CONFIG.storageKey);
+    const useNewTab = newTabEnabled === null ? NEW_TAB_CONFIG.defaultValue : newTabEnabled === 'true';
+
+    if (useNewTab) {
+        window.open('https://tesla-player.com/?url=' + encodedUrl, '_blank');
+    } else {
+        showCanvasPlayer(url);
+    }
+}
+
+function showCanvasPlayer(url) {
+    // 隐藏详情弹窗
+    const detailModal = document.getElementById('modal');
+    if (detailModal) detailModal.classList.add('hidden');
+
+    // 隐藏搜索结果和豆瓣区域
+    document.getElementById('resultsArea').classList.add('hidden');
+    document.getElementById('doubanArea').classList.add('hidden');
+
+    // 创建 iframe 覆盖层
+    const iframe = document.createElement('iframe');
+    iframe.id = 'CanvasPlayerFrame';
+    iframe.className = 'fixed inset-0 w-full h-full z-40 border-0';
+    iframe.allow = 'autoplay; fullscreen';
+    iframe.src = '/player/canvas-player.html?url=' + encodeURIComponent(url);
+    document.body.appendChild(iframe);
+
+    // 悬浮关闭按钮
+    const closeBtn = document.createElement('button');
+    closeBtn.id = 'CanvasPlayerCloseBtn';
+    closeBtn.innerHTML = '&times;';
+    closeBtn.className = 'fixed top-4 right-4 z-50 w-10 h-10 flex items-center justify-center bg-black/70 hover:bg-red-600 text-white text-2xl rounded-full transition-colors cursor-pointer';
+    closeBtn.onclick = hideCanvasPlayer;
+    document.body.appendChild(closeBtn);
+}
+
+function hideCanvasPlayer() {
+    const iframe = document.getElementById('CanvasPlayerFrame');
+    if (iframe) iframe.remove();
+    const closeBtn = document.getElementById('CanvasPlayerCloseBtn');
+    if (closeBtn) closeBtn.remove();
+    document.getElementById('resultsArea').classList.remove('hidden');
+    const detailModal = document.getElementById('modal');
+    if (detailModal) detailModal.classList.add('hidden');
+    if (localStorage.getItem('doubanEnabled') === 'true') {
+        document.getElementById('doubanArea').classList.remove('hidden');
+    }
 }
 
 // 弹出播放器页面
@@ -1027,6 +1092,9 @@ function closeVideoPlayer(home = false) {
     videoPlayerFrame = document.getElementById('VideoPlayerFrame');
     if (videoPlayerFrame) {
         videoPlayerFrame.remove();
+        // 移除关闭按钮
+        const closeBtn = document.getElementById('VideoPlayerCloseBtn');
+        if (closeBtn) closeBtn.remove();
         // 恢复搜索结果显示
         document.getElementById('resultsArea').classList.remove('hidden');
         // 关闭播放器时也隐藏详情弹窗

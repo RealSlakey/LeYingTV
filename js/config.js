@@ -218,6 +218,12 @@ const M3U8_PATTERN = /\$https?:\/\/[^"'\s]+?\.m3u8/g;
 const CUSTOM_PLAYER_URL = 'player.html'; // 使用相对路径引用本地player.html
 
 // 增加视频播放相关配置
+// 新标签页打开设置
+const NEW_TAB_CONFIG = {
+    storageKey: 'newTabEnabled',
+    defaultValue: false // 默认当前页打开
+};
+
 const PLAYER_CONFIG = {
     autoplay: true,
     allowFullscreen: true,
