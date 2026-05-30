@@ -67,17 +67,17 @@
     .progress-container {
       width: 100%;
       cursor: pointer;
-      padding: 12px 0;  /* 加大触控区域 */
+      padding: 16px 0;  /* 加大触控区域 */
     }
     .progress-track {
       width: 100%;
-      height: 10px;           /* 加粗 */
-      background: rgba(255,255,255,0.25);
-      border-radius: 5px;
+      height: 16px;           /* 加粗到16px */
+      background: rgba(255,255,255,0.3);
+      border-radius: 8px;
       position: relative;
       overflow: hidden;
     }
-    .progress-track:hover { height: 14px; }
+    .progress-track:hover { height: 20px; }
     .progress-buffer {
       height: 100%;
       background: rgba(255,255,255,0.35);
@@ -111,12 +111,12 @@
       border: none;
       color: #fff;
       cursor: pointer;
-      font-size: 22px;          /* 图标加大 */
-      border-radius: 8px;
+      font-size: 32px;          /* 图标加大 */
+      border-radius: 12px;
       transition: background 0.2s;
-      /* 最小 48×48 触控区域（车机/手指） */
-      min-width: 48px;
-      min-height: 48px;
+      /* 100×100 触控区域（车机） */
+      min-width: 100px;
+      min-height: 100px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -137,20 +137,20 @@
     }
 
     /* ========== 音量滑块（加粗） ========== */
-    .volume-container { display: flex; align-items: center; gap: 6px; }
+    .volume-container { display: flex; align-items: center; gap: 8px; }
     .volume-slider {
-      width: 90px;
-      height: 8px;              /* 加粗 */
+      width: 120px;
+      height: 12px;              /* 加粗 */
       -webkit-appearance: none;
       appearance: none;
-      background: rgba(255,255,255,0.25);
-      border-radius: 4px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 6px;
       cursor: pointer;
       outline: none;
     }
     .volume-slider::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 22px; height: 22px;   /* 滑块加大 */
+      width: 32px; height: 32px;   /* 滑块加大 */
       background: #fff;
       border-radius: 50%;
       cursor: pointer;
@@ -171,14 +171,17 @@
     .speed-select option, .quality-select option { background: #1a1a1a; }
     .quality-select { display: none; }
 
-    /* ========== 状态提示 ========== */
+    /* ========== 状态提示（纯文字无背景框） ========== */
     .status {
       position: fixed;
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      padding: 18px 32px;
-      border-radius: 10px;
-      font-size: 17px;
+      padding: 0;
+      background: transparent;   /* 无背景 */
+      border-radius: 0;
+      font-size: 20px;
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.8);
       display: none;
       text-align: center;
       z-index: 10000;
@@ -186,10 +189,7 @@
       pointer-events: none;
       white-space: nowrap;
     }
-    .status.info    { background: rgba(59,130,246,0.92); }
-    .status.success { background: rgba(22,163,74,0.92); }
-    .status.error   { background: rgba(220,38,38,0.92); }
-    .status.warn    { background: rgba(202,138,4,0.92); }
+    .status.info, .status.success, .status.error, .status.warn { background: transparent; }
 
     /* ========== Loading ========== */
     .loading {
@@ -332,11 +332,8 @@ function init() {
 
   document.addEventListener('keydown', handleKeydown);
 
-  // 鼠标移动 → 显示控制栏（桌面端）
-  document.getElementById('playerContainer').addEventListener('mousemove', () => {
-    document.getElementById('controls').classList.add('show');
-    resetControlsTimeout();
-  });
+  // 鼠标移动 → 显示控制栏（桌面端），初始隐藏
+  // 控制栏初始状态：隐藏，等用户单击画面才显示
 
   // 单击画面 → 切换控制栏显示/隐藏；双击 → 播放/暂停
   canvas.addEventListener('click', (e) => {
@@ -442,7 +439,7 @@ function loadHLSVideo(url) {
     });
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
       hideLoading();
-      showStatus('点击画面开始播放', 'success');
+      showStatus('点击画面开始播放', 'info');
       // 不自动播放，等用户点击播放按钮
     });
     hls.on(Hls.Events.ERROR, (e,d) => {
