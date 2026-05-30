@@ -225,7 +225,7 @@
 
     <div class="controls show" id="controls">
       <!-- 进度条 -->
-      <div class="progress-container" onclick="seek(event)">
+      <div class="progress-container" id="progressContainer">
         <div class="progress-track" id="progressTrack">
           <div class="progress-buffer" id="progressBuffer"></div>
           <div class="progress-fill" id="progressFill"></div>
@@ -321,6 +321,11 @@ function init() {
     e.stopPropagation();
     if (_clickTimer) { clearTimeout(_clickTimer); _clickTimer = null; }
     togglePlay();
+  });
+
+  // 进度条点击（受 pointer-events 控制）
+  document.getElementById('progressContainer').addEventListener('click', (e) => {
+    seek(e);
   });
   // 防止控制栏内点击冒泡触发 toggle
   document.getElementById('controls').addEventListener('click', (e) => e.stopPropagation());
