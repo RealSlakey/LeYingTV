@@ -964,6 +964,13 @@ function hideCanvasPlayer() {
     }
 }
 
+// 监听来自 canvas-player.html 的关闭消息
+window.addEventListener('message', (e) => {
+    if (e.data === 'close-canvas-player') {
+        hideCanvasPlayer();
+    }
+});
+
 // 弹出播放器页面
 function showVideoPlayer(url) {
     // 在打开播放器前，隐藏详情弹窗
