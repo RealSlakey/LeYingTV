@@ -1,209 +1,397 @@
-/* 主页特定样式 */
+/* ============================================================
+   SlakeyTV - Index Page Specific Styles (MD3)
+   ============================================================ */
 
-/* 历史记录和设置按钮定位样式 */
+/* ---------- Top Corner Buttons (Filled Tonal Icon Button) ---------- */
 .top-corner-button {
-    position: fixed;
-    z-index: 10;
-    background: #222;
-    border: 1px solid #333;
-    border-radius: 0.5rem;
-    padding: 0.375rem 0.75rem;
-    transition: all 0.2s ease;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--md-radius-full);
+  background: var(--md-surface-container-high);
+  border: 1px solid var(--md-outline-variant);
+  color: var(--md-on-surface);
+  cursor: pointer;
+  transition: all var(--md-motion);
+  padding: 0;
 }
-
 .top-corner-button:hover {
-    background: #333;
-    border-color: white;
+  background: var(--md-surface-container-highest);
+  box-shadow: var(--md-evelation-1);
+}
+.top-corner-button svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
 }
 
-/* 搜索区域样式 */
+/* ---------- Search Box (MD3 Search Bar - Filled) ---------- */
 .search-box {
-    height: 3.5rem;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-    border-radius: 0.5rem;
-    overflow: hidden;
-    display: flex;
-    align-items: stretch;
+  height: 56px;
+  background: var(--md-surface-container-high);
+  border-radius: var(--md-radius-full);
+  box-shadow: var(--md-evelation-1);
+  border: 1px solid var(--md-outline-variant);
+  overflow: hidden;
+  display: flex;
+  align-items: stretch;
+  transition: border-color var(--md-motion), box-shadow var(--md-motion);
+}
+.search-box:focus-within {
+  border-color: var(--md-primary);
+  box-shadow: 0 0 0 1px var(--md-primary), var(--md-evelation-2);
 }
 
-.search-button {
-    width: 5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: white;
-    color: black;
-    font-weight: 500;
-    transition: background-color 0.2s;
+/* Home button inside search */
+.search-box > a,
+.search-box > button:first-child {
+  background: var(--md-surface-container-highest) !important;
+  color: var(--md-on-surface) !important;
+  font-weight: 500;
+  font-size: 0.9rem;
+  border: none !important;
+  border-radius: var(--md-radius-full) 0 0 var(--md-radius-full) !important;
+  border-right: 1px solid var(--md-outline-variant) !important;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  text-decoration: none;
+  transition: background var(--md-motion);
+  white-space: nowrap;
+}
+.search-box > a:hover,
+.search-box > button:first-child:hover {
+  background: var(--md-surface-container-highest) !important;
+  opacity: 0.85;
 }
 
-.search-button:hover {
-    background: #f0f0f0;
-}
-
+/* Search input */
 .search-input {
-    flex: 1;
-    background: #111;
-    border-top: 1px solid #333;
-    border-bottom: 1px solid #333;
-    color: white;
-    padding: 0 1.5rem;
-    font-size: 1rem;
-    outline: none;
-    transition: background-color 0.2s;
+  flex: 1;
+  background: transparent !important;
+  border: none !important;
+  color: var(--md-on-surface) !important;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  padding: 0 20px !important;
+  outline: none;
+  min-width: 0;
+}
+.search-input::placeholder {
+  color: var(--md-on-surface-variant);
+  opacity: 0.6;
 }
 
-.search-input:focus {
-    background: #191919;
+/* Clear button */
+#clearSearchInput {
+  background: transparent !important;
+  border: none !important;
+  color: var(--md-on-surface-variant) !important;
+  padding: 0 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: color var(--md-motion);
+}
+#clearSearchInput:hover {
+  color: var(--md-on-surface) !important;
+}
+#clearSearchInput svg {
+  width: 20px;
+  height: 20px;
 }
 
-/* 最近搜索记录样式 */
+/* Search button (Filled Button) */
+.search-button,
+.search-box > button:last-child {
+  background: var(--md-primary) !important;
+  color: var(--md-on-primary) !important;
+  font-weight: 500;
+  font-size: 0.95rem;
+  border: none !important;
+  border-radius: 0 var(--md-radius-full) var(--md-radius-full) 0 !important;
+  padding: 0 24px;
+  cursor: pointer;
+  transition: all var(--md-motion);
+  font-family: 'Inter', sans-serif;
+  white-space: nowrap;
+}
+.search-button:hover,
+.search-box > button:last-child:hover {
+  background: var(--md-primary-light) !important;
+  box-shadow: var(--md-evelation-1);
+}
+
+/* ---------- Recent Search Tags (MD3 Filter Chip) ---------- */
 .recent-search-tag {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    margin: 0.25rem;
-    background: rgba(59, 130, 246, 0.1);
-    border: 1px solid rgba(59, 130, 246, 0.2);
-    border-radius: 0.5rem;
-    color: #e5e7eb;
-    font-size: 0.875rem;
-    transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  background: var(--md-surface-container-high);
+  border: 1px solid var(--md-outline-variant);
+  border-radius: var(--md-radius-full);
+  color: var(--md-on-surface-variant);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--md-motion);
+  white-space: nowrap;
 }
-
 .recent-search-tag:hover {
-    background: rgba(59, 130, 246, 0.2);
-    border-color: rgba(59, 130, 246, 0.4);
+  background: var(--md-surface-container-highest);
+  border-color: var(--md-outline);
+  color: var(--md-on-surface);
 }
 
-/* 豆瓣区域样式 */
+/* ---------- Douban Section (MD3) ---------- */
 .douban-container {
-    margin: 2rem auto;
-    max-width: 1280px;
-    padding: 0 0.5rem;
+  margin: 2rem auto;
+  max-width: 1280px;
+  padding: 0 1rem;
 }
 
 .douban-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
+/* Title */
+.douban-header h2,
+#doubanArea h2,
+.text-xl.font-bold.text-white {
+  color: var(--md-on-surface);
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+/* Movie/TV toggle (MD3 Segmented Button) */
 .douban-toggle {
-    display: flex;
-    align-items: center;
-    background: #222;
-    border-radius: 9999px;
-    padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  background: var(--md-surface-container-high);
+  border-radius: var(--md-radius-full);
+  padding: 4px;
+  gap: 2px;
+  border: 1px solid var(--md-outline-variant);
 }
-
 .douban-toggle-button {
-    padding: 0.25rem 0.75rem;
-    font-size: 0.875rem;
-    border-radius: 9999px;
+  padding: 6px 16px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border-radius: var(--md-radius-full);
+  border: none;
+  background: transparent;
+  color: var(--md-on-surface-variant);
+  cursor: pointer;
+  transition: all var(--md-motion);
+  font-family: 'Inter', sans-serif;
 }
-
 .douban-toggle-button.active {
-    background: #db2777;
-    color: white;
+  background: var(--md-primary);
+  color: var(--md-on-primary);
+  box-shadow: var(--md-evelation-1);
 }
-
-.douban-toggle-button:not(.active) {
-    color: #9ca3af;
-}
-
 .douban-toggle-button:not(.active):hover {
-    color: white;
+  background: var(--md-surface-container-highest);
+  color: var(--md-on-surface);
 }
 
-.douban-refresh-button {
-    font-size: 0.875rem;
-    padding: 0.25rem 0.75rem;
-    background: #db2777;
-    color: white;
-    border-radius: 0.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
+/* Refresh button (MD3 Filled Tonal Button) */
+.douban-refresh-button,
+#douban-refresh {
+  font-size: 0.8rem;
+  padding: 8px 16px;
+  background: var(--md-secondary-container);
+  color: var(--md-on-secondary-container);
+  border: none;
+  border-radius: var(--md-radius-full);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all var(--md-motion);
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+}
+.douban-refresh-button:hover,
+#douban-refresh:hover {
+  box-shadow: var(--md-evelation-1);
+  opacity: 0.9;
 }
 
-.douban-refresh-button:hover {
-    background: #be185d;
-}
-
+/* Tags (MD3 Filter Chip) */
 .douban-tags-container {
-    overflow-x: auto;
-    padding-bottom: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: none;
 }
-
+.douban-tags-container::-webkit-scrollbar {
+  display: none;
+}
 .douban-tags {
-    display: flex;
-    gap: 0.5rem;
-    min-width: max-content;
+  display: flex;
+  gap: 8px;
+  min-width: max-content;
 }
-
 .douban-tag {
-    padding: 0.25rem 0.75rem;
-    background: rgba(219, 39, 119, 0.1);
-    border: 1px solid rgba(219, 39, 119, 0.2);
-    border-radius: 0.5rem;
-    color: #f9a8d4;
-    font-size: 0.875rem;
-    transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  background: var(--md-surface-container-high);
+  border: 1px solid var(--md-outline-variant);
+  border-radius: var(--md-radius-full);
+  color: var(--md-on-surface-variant);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--md-motion);
+  white-space: nowrap;
 }
-
 .douban-tag:hover {
-    background: rgba(219, 39, 119, 0.2);
-    border-color: rgba(219, 39, 119, 0.4);
+  background: var(--md-surface-container-highest);
+  border-color: var(--md-outline);
+  color: var(--md-on-surface);
 }
-
 .douban-tag.active {
-    background: #db2777;
-    border-color: #db2777;
-    color: white;
+  background: var(--md-primary);
+  border-color: var(--md-primary);
+  color: var(--md-on-primary);
+  box-shadow: var(--md-evelation-1);
 }
 
-/* 搜索结果样式 */
+/* ---------- Search Results Grid ---------- */
 .search-results-container {
-    width: 100%;
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 0.5rem;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
-
 .search-result-stats {
-    text-align: right;
-    font-size: 0.875rem;
-    color: #9ca3af;
-    margin-bottom: 1rem;
+  text-align: right;
+  font-size: 0.8rem;
+  color: var(--md-on-surface-variant);
+  margin-bottom: 1rem;
 }
 
-/* 响应式网格布局 */
+/* Result count number */
+#searchResultsCount {
+  color: var(--md-primary-light);
+  font-weight: 600;
+}
+
+/* ---------- Responsive Grid ---------- */
 .search-results-grid {
-    display: grid;
-    gap: 1rem;
+  display: grid;
+  gap: 16px;
 }
-
 @media (max-width: 640px) {
-    .search-results-grid {
-        grid-template-columns: 1fr;
-    }
+  .search-results-grid {
+    grid-template-columns: 1fr;
+  }
 }
-
 @media (min-width: 641px) and (max-width: 768px) {
-    .search-results-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+  .search-results-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
-
 @media (min-width: 769px) and (max-width: 1024px) {
-    .search-results-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
+  .search-results-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (min-width: 1025px) {
+  .search-results-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
-@media (min-width: 1025px) {
-    .search-results-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
+/* ---------- Search Card (Horizontal Layout) ---------- */
+.search-card-img-container {
+  width: 100px;
+  height: 150px;
+  border-radius: var(--md-radius-sm) 0 0 var(--md-radius-sm);
+  overflow: hidden;
+  background: var(--md-surface-container-lowest);
+  flex-shrink: 0;
 }
+.search-card-img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---------- Modal Detail Info (MD3 Card) ---------- */
+#modal .modal-detail-info {
+  background: var(--md-surface-container);
+  border: 1px solid var(--md-outline-variant);
+  border-radius: var(--md-radius-lg);
+  padding: 16px;
+  margin-bottom: 20px;
+}
+#modal .detail-label {
+  color: var(--md-on-surface-variant);
+  font-weight: 500;
+  font-size: 0.8rem;
+  min-width: 48px;
+  flex-shrink: 0;
+}
+#modal .detail-value {
+  color: var(--md-on-surface);
+  font-size: 0.85rem;
+}
+
+/* ---------- Episode Stats ---------- */
+#modal .episode-stats {
+  color: var(--md-on-surface-variant);
+  font-size: 0.8rem;
+}
+
+/* ---------- Mobile Optimizations ---------- */
+@media screen and (max-width: 640px) {
+  .top-corner-button {
+    width: 36px;
+    height: 36px;
+  }
+  .top-corner-button svg {
+    width: 18px;
+    height: 18px;
+  }
+  .search-box {
+    height: 48px;
+  }
+  .douban-toggle-button {
+    padding: 5px 12px;
+    font-size: 0.75rem;
+  }
+  .footer {
+    padding-bottom: 1rem;
+  }
+}
+
+/* ---------- Animations ---------- */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.search-results-grid > div,
+#douban-results > div {
+  animation: slideUp 400ms cubic-bezier(0.05, 0.7, 0.1, 1) both;
+}
+.search-results-grid > div:nth-child(1),  #douban-results > div:nth-child(1)  { animation-delay: 0ms; }
+.search-results-grid > div:nth-child(2),  #douban-results > div:nth-child(2)  { animation-delay: 40ms; }
+.search-results-grid > div:nth-child(3),  #douban-results > div:nth-child(3)  { animation-delay: 80ms; }
+.search-results-grid > div:nth-child(4),  #douban-results > div:nth-child(4)  { animation-delay: 120ms; }
+.search-results-grid > div:nth-child(5),  #douban-results > div:nth-child(5)  { animation-delay: 160ms; }
+.search-results-grid > div:nth-child(6),  #douban-results > div:nth-child(6)  { animation-delay: 200ms; }
+.search-results-grid > div:nth-child(7),  #douban-results > div:nth-child(7)  { animation-delay: 240ms; }
+.search-results-grid > div:nth-child(8),  #douban-results > div:nth-child(8)  { animation-delay: 280ms; }
+.search-results-grid > div:nth-child(n+9), #douban-results > div:nth-child(n+9) { animation-delay: 320ms; }
