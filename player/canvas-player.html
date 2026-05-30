@@ -223,7 +223,7 @@
       x5-video-player-type="h5"
     ></video>
 
-    <div class="controls show" id="controls">
+    <div class="controls" id="controls">
       <!-- 进度条 -->
       <div class="progress-container" id="progressContainer">
         <div class="progress-track" id="progressTrack">
@@ -279,6 +279,9 @@ function init() {
   ctx = canvas.getContext('2d');
   hiddenVideo = document.getElementById('hiddenVideo');
   hiddenVideo.muted = false;  // 允许有声播放
+
+  // 默认显示控制栏
+  document.getElementById('controls').classList.add('show');
 
   if (typeof Hls === 'undefined') { showStatus('错误: HLS.js 未加载', 'error'); return; }
 
