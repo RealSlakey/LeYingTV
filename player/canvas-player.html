@@ -57,11 +57,12 @@
       gap: 12px;
       opacity: 0;
       transition: opacity 0.3s;
-      /* 最低 48px 触控高度 */
+      pointer-events: none; /* 让点击穿透到 canvas */
       min-height: 48px;
     }
     #playerContainer:hover .controls,
-    .controls.show { opacity: 1; }
+    .controls.show { opacity: 1; pointer-events: auto; }
+    .controls > * { pointer-events: auto; } /* 内部元素可点击 */
 
     /* ========== 进度条（加大触控） ========== */
     .progress-container {
@@ -335,6 +336,7 @@ function init() {
 let controlsTimeout = null;
 function toggleControls() {
   const c = document.getElementById('controls');
+  console.log('toggleControls called, current show:', c.classList.contains('show'));
   if (c.classList.contains('show')) {
     c.classList.remove('show');
   } else {
