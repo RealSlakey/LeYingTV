@@ -449,11 +449,38 @@ function loadVideo(url) {
 }
 
 function loadHLSVideo(url) {
+  // 检测是否为 HLS 流（.m3u8）或普通视频文件
+  const isHLS = url.includes('.m3u8') || url.includes('m3u8');
+  
+  if (!isHLS) {
+    // 非 HLS 格式，直接使用原生 video 标签播放（支持 MP4/WebM 等）
+    console.log('检测到非 HLS 格式，使用原生视频播放:', url);
+    loadNativeVideo(url);
+    return;
+  }
+  
+  // HLS 流处理
   if (Hls.isSupported()) {
     if (hls) hls.destroy();
-    hls = new Hls({ debug:false, enableWorker:true, lowLatencyMode:false, maxBufferLength:30, maxMaxBufferLength:60 });
+    hls = new Hls({ 
+      debug: false,
+      enableWorker: true,
+      lowLatencyMode: false,
+      maxBufferLength: 30,
+      maxMaxBufferLength: 60,
+      // 增强容错配置
+      maxBufferHole: 0.5,
+      maxFragLookUpTolerance: 0.2,
+      xhrSetup: function(xhr) {
+        // 设置超时时间
+        xhr.timeout = 15000; // 15秒超时
+      }
+    });
+    
     hls.on(Hls.Events.MEDIA_ATTACHED, () => console.log('HLS: Media attached'));
+    
     hls.on(Hls.Events.MANIFEST_LOADED, (e,d) => {
+      console.log('HLS: Manifest loaded, levels:', d.levels.length);
       if (d.levels.length > 1) {
         const q = document.getElementById('qualitySelect');
         q.innerHTML = '<option value="-1">自动</option>';
@@ -461,26 +488,89 @@ function loadHLSVideo(url) {
         q.style.display = 'block';
       }
     });
+    
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
       hideLoading();
       showStatus('点击画面开始播放', 'info');
-      // 不自动播放，等用户点击播放按钮
     });
+    
     hls.on(Hls.Events.ERROR, (e,d) => {
-      console.error('HLS 错误:', d.type, d.details);
+      console.error('HLS 错误:', d.type, d.details, d.fatal);
+      
       if (d.fatal) {
-        showStatus('HLS 错误: '+d.details, 'error');
-        if (d.type===Hls.ErrorTypes.NETWORK_ERROR) hls.startLoad();
-        else if (d.type===Hls.ErrorTypes.MEDIA_ERROR) hls.recoverMediaError();
-        else hls.destroy();
+        switch(d.type) {
+          case Hls.ErrorTypes.NETWORK_ERROR:
+            console.log('网络错误，尝试恢复...');
+            showStatus('网络错误，正在重试...', 'warn');
+            // 尝试重新加载
+            setTimeout(() => {
+              if (hls) hls.startLoad();
+            }, 1000);
+            break;
+            
+          case Hls.ErrorTypes.MEDIA_ERROR:
+            console.log('媒体错误，尝试恢复...');
+            showStatus('媒体格式错误，尝试修复...', 'warn');
+            hls.recoverMediaError();
+            break;
+            
+          default:
+            console.error('致命错误，销毁 HLS 实例');
+            showStatus('无法加载视频流 (' + d.details + ')', 'error');
+            hls.destroy();
+            // 尝试降级到原生播放
+            tryNativeFallback(url);
+            break;
+        }
+      } else {
+        // 非致命错误，记录但不影响播放
+        console.warn('非致命 HLS 错误:', d.details);
       }
     });
+    
     hls.loadSource(url);
     hls.attachMedia(hiddenVideo);
+    
   } else if (hiddenVideo.canPlayType('application/vnd.apple.mpegurl')) {
+    // Safari/iOS 原生 HLS 支持
+    console.log('使用 Safari 原生 HLS 支持');
     hiddenVideo.src = url;
   } else {
-    throw new Error('当前浏览器不支持 HLS');
+    // 浏览器不支持 HLS，尝试作为普通视频加载
+    console.warn('浏览器不支持 HLS，尝试原生视频加载');
+    tryNativeFallback(url);
+  }
+}
+
+// 原生视频加载（用于 MP4/WebM 等格式）
+function loadNativeVideo(url) {
+  hideLoading();
+  hiddenVideo.src = url;
+  hiddenVideo.load();
+  showStatus('点击画面开始播放', 'info');
+}
+
+// 降级方案：当 HLS 失败时尝试原生播放
+function tryNativeFallback(url) {
+  console.log('尝试降级到原生视频播放...');
+  showStatus('正在切换播放模式...', 'info');
+  
+  // 清理 HLS 实例
+  if (hls) {
+    hls.destroy();
+    hls = null;
+  }
+  
+  // 尝试直接设置 src
+  try {
+    hiddenVideo.src = url;
+    hiddenVideo.load();
+    hideLoading();
+    showStatus('已切换到兼容模式', 'success');
+  } catch(err) {
+    console.error('降级失败:', err);
+    showStatus('视频加载失败: 不支持的格式', 'error');
+    hideLoading();
   }
 }
 
