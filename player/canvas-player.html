@@ -314,11 +314,13 @@ function init() {
 
   // 单击画面 → 切换控制栏显示/隐藏；双击 → 播放/暂停
   canvas.addEventListener('click', (e) => {
+    console.log('canvas click event fired');
     e.stopPropagation();
     if (_clickTimer) clearTimeout(_clickTimer);
-    _clickTimer = setTimeout(() => { toggleControls(); _clickTimer = null; }, 300);
+    _clickTimer = setTimeout(() => { console.log('toggleControls called from click'); toggleControls(); _clickTimer = null; }, 300);
   });
   canvas.addEventListener('dblclick', (e) => {
+    console.log('canvas dblclick event fired');
     e.stopPropagation();
     if (_clickTimer) { clearTimeout(_clickTimer); _clickTimer = null; }
     togglePlay();
@@ -336,11 +338,13 @@ function init() {
 let controlsTimeout = null;
 function toggleControls() {
   const c = document.getElementById('controls');
-  console.log('toggleControls called, current show:', c.classList.contains('show'));
+  console.log('toggleControls called, current show:', c.classList.contains('show'), 'opacity:', window.getComputedStyle(c).opacity);
   if (c.classList.contains('show')) {
     c.classList.remove('show');
+    console.log('Removed show class');
   } else {
     c.classList.add('show');
+    console.log('Added show class');
     resetControlsTimeout();
   }
 }
