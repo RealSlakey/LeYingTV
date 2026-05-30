@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>SlakeyTV Player</title>
+  <!-- Material Icons Font -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js"></script>
   <style>
     * { margin:0; padding:0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -113,7 +115,7 @@
       cursor: pointer;
       font-size: 32px;          /* 图标加大 */
       border-radius: 12px;
-      transition: background 0.2s;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       /* 100×100 触控区域（车机） */
       min-width: 100px;
       min-height: 100px;
@@ -122,9 +124,38 @@
       justify-content: center;
       padding: 0;
       user-select: none;
+      position: relative;
+      overflow: hidden;
     }
-    .control-btn:hover { background: rgba(255,255,255,0.12); }
-    .control-btn:active { background: rgba(255,255,255,0.22); }
+    .control-btn .material-icons-outlined {
+      font-size: inherit;
+      line-height: 1;
+    }
+    .control-btn:hover {
+      background: rgba(255,255,255,0.12);
+      transform: scale(1.05);
+    }
+    .control-btn:active {
+      background: rgba(255,255,255,0.22);
+      transform: scale(0.95);
+    }
+    /* 按钮点击涟漪效果 */
+    .control-btn::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.3s, height 0.3s;
+    }
+    .control-btn:active::after {
+      width: 120px;
+      height: 120px;
+    }
 
     .time-display {
       font-size: 15px;
@@ -198,7 +229,10 @@
       .control-btn {
         min-width: 44px;
         min-height: 44px;
-        font-size: 20px;
+        font-size: 24px;
+      }
+      .control-btn .material-icons-outlined {
+        font-size: 24px;
       }
       .time-display { font-size: 13px; min-width: 90px; }
 
@@ -235,9 +269,15 @@
       <div class="controls-row">
         <!-- 左侧：播放/暂停/快退快进/时间 -->
         <div class="controls-left">
-          <button class="control-btn" id="playBtn" onclick="togglePlay()" title="播放/暂停">▶️</button>
-          <button class="control-btn" onclick="seekRelative(-10)" title="后退10秒">⏪</button>
-          <button class="control-btn" onclick="seekRelative(10)" title="前进10秒">⏩</button>
+          <button class="control-btn" id="playBtn" onclick="togglePlay()" title="播放/暂停">
+            <span class="material-icons-outlined">play_arrow</span>
+          </button>
+          <button class="control-btn" onclick="seekRelative(-10)" title="后退10秒">
+            <span class="material-icons-outlined">replay_10</span>
+          </button>
+          <button class="control-btn" onclick="seekRelative(10)" title="前进10秒">
+            <span class="material-icons-outlined">forward_10</span>
+          </button>
 
           <span class="time-display" id="timeDisplay">0:00 / 0:00</span>
         </div>
@@ -259,8 +299,12 @@
           <select class="quality-select" id="qualitySelect" onchange="setQuality(this.value)">
             <option value="-1">自动</option>
           </select>
-          <button class="control-btn" id="fullscreenBtn" onclick="toggleFullscreen()" title="全屏">⛶</button>
-          <button class="control-btn" onclick="closePlayer()" title="关闭播放器" style="font-size:20px;">✕</button>
+          <button class="control-btn" id="fullscreenBtn" onclick="toggleFullscreen()" title="全屏">
+            <span class="material-icons-outlined">fullscreen</span>
+          </button>
+          <button class="control-btn" onclick="closePlayer()" title="关闭播放器" style="font-size:28px;">
+            <span class="material-icons-outlined">close</span>
+          </button>
         </div>
       </div>
     </div>
@@ -298,12 +342,12 @@ function init() {
   hiddenVideo.addEventListener('canplay',     () => console.log('视频可以播放'));
   hiddenVideo.addEventListener('playing',      () => {
     isPlaying = true;
-    document.getElementById('playBtn').textContent = '⏸️';
+    document.getElementById('playBtn').innerHTML = '<span class="material-icons-outlined">pause</span>';
     hideStatus();
     renderFrame();
   });
-  hiddenVideo.addEventListener('pause',       () => { isPlaying = false; document.getElementById('playBtn').textContent = '▶️'; });
-  hiddenVideo.addEventListener('ended',       () => { isPlaying = false; document.getElementById('playBtn').textContent = '▶️'; cancelAnimationFrame(animationFrameId); });
+  hiddenVideo.addEventListener('pause',       () => { isPlaying = false; document.getElementById('playBtn').innerHTML = '<span class="material-icons-outlined">play_arrow</span>'; });
+  hiddenVideo.addEventListener('ended',       () => { isPlaying = false; document.getElementById('playBtn').innerHTML = '<span class="material-icons-outlined">play_arrow</span>'; cancelAnimationFrame(animationFrameId); });
   hiddenVideo.addEventListener('error',        (e) => { console.error('视频错误:', hiddenVideo.error); showStatus('播放错误，请检查地址', 'error'); hideLoading(); });
 
   hiddenVideo.addEventListener('timeupdate',   () => updateProgress());
@@ -472,13 +516,13 @@ function togglePlay() {
   if (isPlaying) {
     hiddenVideo.pause();
     isPlaying = false;
-    document.getElementById('playBtn').textContent = '▶️';
+    document.getElementById('playBtn').innerHTML = '<span class="material-icons-outlined">play_arrow</span>';
     cancelAnimationFrame(animationFrameId);
   } else {
     hiddenVideo.muted = false;
     hiddenVideo.play().then(() => {
       isPlaying = true;
-      document.getElementById('playBtn').textContent = '⏸️';
+      document.getElementById('playBtn').innerHTML = '<span class="material-icons-outlined">pause</span>';
       renderFrame();
     }).catch(err => {
       console.error('播放失败:', err.message);
@@ -509,17 +553,27 @@ function setQuality(l){
 /* ---------- 全屏 ---------- */
 function toggleFullscreen(){
   const c=document.getElementById('playerContainer');
+  const btn = document.getElementById('fullscreenBtn');
   if(!isFullscreen){
     (c.requestFullscreen||c.webkitRequestFullscreen).call(c.requestFullscreen?c:c);
     c.classList.add('fullscreen'); isFullscreen=true;
+    btn.innerHTML = '<span class="material-icons-outlined">fullscreen_exit</span>';
     setTimeout(resizeCanvas,350);
   } else {
     (document.exitFullscreen||document.webkitExitFullscreen).call(document.exitFullscreen?document:document);
     c.classList.remove('fullscreen'); isFullscreen=false;
+    btn.innerHTML = '<span class="material-icons-outlined">fullscreen</span>';
     setTimeout(resizeCanvas,350);
   }
 }
-document.addEventListener('fullscreenchange',()=>{ if(!document.fullscreenElement){ document.getElementById('playerContainer').classList.remove('fullscreen'); isFullscreen=false; setTimeout(resizeCanvas,100); }});
+document.addEventListener('fullscreenchange',()=>{
+  if(!document.fullscreenElement){
+    document.getElementById('playerContainer').classList.remove('fullscreen');
+    isFullscreen=false;
+    document.getElementById('fullscreenBtn').innerHTML = '<span class="material-icons-outlined">fullscreen</span>';
+    setTimeout(resizeCanvas,100);
+  }
+});
 
 /* ---------- 关闭播放器 ---------- */
 function closePlayer() {
