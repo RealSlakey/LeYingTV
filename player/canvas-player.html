@@ -341,6 +341,23 @@ function init() {
 
 /* ---------- 控制栏显示/隐藏 ---------- */
 let controlsTimeout = null;
+
+// 劫持 classList 操作，捕获所有 add/remove
+document.addEventListener('DOMContentLoaded', () => {
+  const controls = document.getElementById('controls');
+  const originalAdd = controls.classList.add.bind(controls.classList);
+  const originalRemove = controls.classList.remove.bind(controls.classList);
+  
+  controls.classList.add = function(...args) {
+    console.trace('classList.add 被调用:', args, new Error().stack);
+    return originalAdd(...args);
+  };
+  controls.classList.remove = function(...args) {
+    console.trace('classList.remove 被调用:', args, new Error().stack);
+    return originalRemove(...args);
+  };
+});
+
 function toggleControls() {
   const c = document.getElementById('controls');
   if (c.classList.contains('show')) {
