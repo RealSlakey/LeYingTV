@@ -1,0 +1,652 @@
+/* ============================================================
+   SlakeyTV Player - Material Design 3 Style
+   Standalone CSS for canvas-player.html
+   ============================================================ */
+
+/* ---------- MD3 Color System (standalone, no external dependency) ---------- */
+:root {
+  --md-primary: #6750A4;
+  --md-primary-light: #7F67CC;
+  --md-on-primary: #FFFFFF;
+  --md-primary-container: #EADDFF;
+  --md-on-primary-container: #21005D;
+
+  --md-secondary: #625B71;
+  --md-on-secondary: #FFFFFF;
+  --md-secondary-container: #E8DEF8;
+  --md-on-secondary-container: #1D192B;
+
+  --md-surface: #FFFBFE;
+  --md-surface-dim: #141218;
+  --md-surface-container-lowest: #0E0E12;
+  --md-surface-container-low: #1A1A1F;
+  --md-surface-container: #1F1F24;
+  --md-surface-container-high: #27272C;
+  --md-surface-container-highest: #323238;
+  --md-on-surface: #E6E0E9;
+  --md-on-surface-variant: #CAC4CF;
+
+  --md-outline: #49454F;
+  --md-outline-variant: #36343A;
+
+  --md-error: #FFB4AB;
+  --md-on-error: #690005;
+  --md-error-container: #93000A;
+  --md-on-error-container: #FFDAD6;
+
+  --md-scrim: rgba(0, 0, 0, 0.32);
+
+  --md-elevation-1: 0 1px 2px rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
+  --md-elevation-2: 0 1px 2px rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15);
+  --md-elevation-3: 0 4px 8px 3px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.2);
+
+  --md-radius-sm: 8px;
+  --md-radius-md: 12px;
+  --md-radius-lg: 16px;
+  --md-radius-xl: 28px;
+  --md-radius-full: 9999px;
+
+  --md-motion: 200ms cubic-bezier(0.2, 0, 0, 1);
+  --md-motion-emphasized: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
+}
+
+/* ---------- Reset & Base ---------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--md-surface-dim);
+  color: var(--md-on-surface);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+  height: 100vh;
+  margin: 0;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: none;
+  touch-action: manipulation;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#playerContainer {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  display: none;
+}
+
+#playerContainer.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+}
+
+#videoCanvas {
+  display: block;
+  cursor: pointer;
+  max-width: 100vw;
+  max-height: 100vh;
+}
+
+#hiddenVideo {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+/* ========== Controls Bar (MD3 Bottom Bar) ========== */
+.controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.88));
+  padding: 20px 24px max(20px, env(safe-area-inset-bottom, 20px));
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  opacity: 0;
+  transition: opacity 300ms ease;
+  pointer-events: none;
+  min-height: 56px;
+}
+
+.controls.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ========== Progress Bar (MD3 Slider) ========== */
+.progress-container {
+  width: 100%;
+  cursor: pointer;
+  padding: 18px 0;
+}
+
+.progress-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  position: relative;
+  overflow: visible;
+  transition: height 150ms ease;
+}
+
+.progress-track:hover {
+  height: 6px;
+}
+
+.progress-track::after {
+  content: '';
+  position: absolute;
+  top: -14px;
+  left: 0;
+  width: 100%;
+  height: 32px;
+  cursor: pointer;
+}
+
+.progress-buffer {
+  height: 100%;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 2px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: width 300ms ease;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--md-primary);
+  border-radius: 2px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: width 100ms linear;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%) scale(0);
+  width: 12px;
+  height: 12px;
+  background: var(--md-primary);
+  border-radius: 50%;
+  transition: transform 150ms ease;
+  box-shadow: 0 0 0 3px rgba(103, 80, 164, 0.25);
+}
+
+.progress-track:hover .progress-fill::after {
+  transform: translateY(-50%) scale(1);
+}
+
+/* ========== Controls Row ========== */
+.controls-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  flex-wrap: nowrap;
+}
+
+.controls-left {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.controls-center {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  justify-content: center;
+}
+
+.controls-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* ========== Control Buttons (MD3 Icon Button - Filled Tonal) ========== */
+.control-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  border-radius: var(--md-radius-full);
+  transition: all var(--md-motion);
+  min-width: 52px;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.control-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+  border-radius: inherit;
+  transition: opacity var(--md-motion);
+  pointer-events: none;
+}
+
+.control-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.control-btn:hover::before {
+  opacity: 0.04;
+}
+
+.control-btn:active::before {
+  opacity: 0.1;
+}
+
+.control-btn .material-icons-outlined {
+  font-size: 28px;
+  line-height: 1;
+  position: relative;
+  z-index: 1;
+}
+
+/* Ripple effect */
+.control-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 300ms ease, height 300ms ease;
+}
+
+.control-btn:active::after {
+  width: 56px;
+  height: 56px;
+}
+
+.time-display {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.85);
+  min-width: 100px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  user-select: none;
+  white-space: nowrap;
+  font-family: 'Inter', monospace;
+  letter-spacing: 0.02em;
+}
+
+/* ========== Select (MD3 Menu) ========== */
+.speed-select,
+.quality-select {
+  background: var(--md-surface-container-high);
+  color: var(--md-on-surface);
+  border: 1px solid var(--md-outline-variant);
+  padding: 8px 14px;
+  padding-right: 28px;
+  border-radius: var(--md-radius-sm);
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  min-height: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23CAC4CF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+  transition: border-color var(--md-motion), box-shadow var(--md-motion);
+}
+
+.speed-select:focus,
+.quality-select:focus {
+  border-color: var(--md-primary);
+  box-shadow: 0 0 0 1px var(--md-primary);
+}
+
+.speed-select option,
+.quality-select option {
+  background: #1F1F24;
+  color: #E6E0E9;
+}
+
+.quality-select {
+  display: none;
+}
+
+/* ========== Status Toast (MD3 Snackbar) ========== */
+.status {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.95);
+  padding: 12px 24px;
+  background: var(--md-surface-container-high);
+  border-radius: var(--md-radius-sm);
+  font-size: 15px;
+  color: var(--md-on-surface);
+  text-shadow: none;
+  display: none;
+  text-align: center;
+  z-index: 10000;
+  max-width: 80%;
+  pointer-events: auto;
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--md-outline-variant);
+  box-shadow: var(--md-elevation-2);
+  opacity: 0;
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.status.show {
+  display: block;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.status.info {
+  background: rgba(103, 80, 164, 0.85);
+  border-color: rgba(103, 80, 164, 0.4);
+  color: var(--md-on-primary);
+}
+
+.status.success {
+  background: rgba(20, 150, 80, 0.85);
+  border-color: rgba(20, 150, 80, 0.4);
+  color: #fff;
+}
+
+.status.error {
+  background: rgba(186, 26, 26, 0.9);
+  border-color: rgba(186, 26, 26, 0.5);
+  color: #fff;
+}
+
+.status.warn {
+  background: rgba(200, 150, 0, 0.85);
+  border-color: rgba(200, 150, 0, 0.4);
+  color: #000;
+}
+
+/* ========== Error Panel (MD3 Dialog) ========== */
+.error-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.95);
+  z-index: 10001;
+  background: var(--md-surface-container);
+  backdrop-filter: blur(16px);
+  border-radius: var(--md-radius-lg);
+  padding: 32px;
+  min-width: 340px;
+  max-width: 90vw;
+  text-align: center;
+  box-shadow: var(--md-elevation-3), 0 0 0 1px var(--md-outline-variant);
+  pointer-events: auto;
+  display: none;
+  opacity: 0;
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.error-panel.show {
+  display: block;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.error-panel-icon {
+  font-size: 56px;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.error-panel-icon.error {
+  color: #F2B8B5;
+}
+
+.error-panel-icon.warn {
+  color: #FDDCA1;
+}
+
+.error-panel-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--md-on-surface);
+  margin-bottom: 8px;
+  font-family: 'Inter', sans-serif;
+}
+
+.error-panel-desc {
+  font-size: 14px;
+  color: var(--md-on-surface-variant);
+  line-height: 1.6;
+  margin-bottom: 24px;
+  font-family: 'Inter', sans-serif;
+}
+
+.error-panel-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.error-panel-btn {
+  padding: 10px 24px;
+  border: none;
+  border-radius: var(--md-radius-full);
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all var(--md-motion);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #fff;
+  min-height: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.error-panel-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+  transition: opacity var(--md-motion);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.error-panel-btn:hover::before {
+  opacity: 0.06;
+}
+
+.error-panel-btn:active::before {
+  opacity: 0.12;
+}
+
+.error-panel-btn .material-icons-outlined {
+  font-size: 18px;
+  position: relative;
+  z-index: 1;
+}
+
+.error-panel-btn.primary {
+  background: var(--md-primary);
+  color: var(--md-on-primary);
+  box-shadow: var(--md-elevation-1);
+}
+
+.error-panel-btn.secondary {
+  background: var(--md-surface-container-high);
+  color: var(--md-on-surface);
+  border: 1px solid var(--md-outline-variant);
+}
+
+.error-panel-btn.danger {
+  background: #BA1A1A;
+  color: #fff;
+}
+
+.error-panel-btn.danger:hover {
+  background: #D32F2F;
+}
+
+.error-panel-hint {
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--md-outline);
+  line-height: 1.6;
+  font-family: 'Inter', sans-serif;
+}
+
+@media (max-width: 480px) {
+  .error-panel {
+    min-width: auto;
+    width: calc(100vw - 48px);
+    padding: 24px 20px;
+  }
+  .error-panel-actions {
+    flex-direction: column;
+  }
+  .error-panel-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+body.error-state #videoCanvas {
+  cursor: pointer;
+}
+
+/* ========== Loading Spinner (MD3 Circular Progress) ========== */
+.loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10001;
+}
+
+.spinner {
+  width: 56px;
+  height: 56px;
+  border: 4px solid rgba(255, 255, 255, 0.12);
+  border-top: 4px solid var(--md-primary);
+  border-radius: 50%;
+  animation: spin 800ms linear infinite;
+  box-shadow: var(--md-elevation-1);
+}
+
+@keyframes spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ========== Close Button (top-right, MD3 Icon Button) ========== */
+#closeBtn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 50;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--md-radius-full);
+  color: #fff;
+  cursor: pointer;
+  transition: all var(--md-motion);
+  opacity: 0;
+  pointer-events: none;
+}
+
+#closeBtn.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#closeBtn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+#closeBtn .material-icons-outlined {
+  font-size: 22px;
+}
+
+/* ========== Mobile Adaptation ========== */
+@media (max-width: 768px) {
+  .controls {
+    padding: 14px 16px max(14px, env(safe-area-inset-bottom, 14px));
+    gap: 10px;
+  }
+
+  .control-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .control-btn .material-icons-outlined {
+    font-size: 24px;
+  }
+
+  .time-display {
+    font-size: 12px;
+    min-width: 85px;
+  }
+
+  .speed-select,
+  .quality-select {
+    font-size: 13px;
+    padding: 6px 10px;
+    padding-right: 24px;
+  }
+
+  .progress-track {
+    height: 3px;
+  }
+
+  .progress-container {
+    padding: 16px 0;
+  }
+}
