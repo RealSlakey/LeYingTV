@@ -136,25 +136,7 @@
       white-space: nowrap;
     }
 
-    /* ========== 音量滑块（加粗） ========== */
-    .volume-container { display: flex; align-items: center; gap: 8px; }
-    .volume-slider {
-      width: 120px;
-      height: 12px;              /* 加粗 */
-      -webkit-appearance: none;
-      appearance: none;
-      background: rgba(255,255,255,0.3);
-      border-radius: 6px;
-      cursor: pointer;
-      outline: none;
-    }
-    .volume-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 32px; height: 32px;   /* 滑块加大 */
-      background: #fff;
-      border-radius: 50%;
-      cursor: pointer;
-    }
+
 
     /* ========== 下拉选择（加大） ========== */
     .speed-select, .quality-select {
@@ -219,7 +201,7 @@
         font-size: 20px;
       }
       .time-display { font-size: 13px; min-width: 90px; }
-      .volume-slider { width: 70px; }
+
       .speed-select, .quality-select { font-size: 13px; padding: 6px 10px; }
       .progress-track { height: 12px; }
       .progress-container { padding: 14px 0; }
@@ -257,12 +239,7 @@
           <button class="control-btn" onclick="stopVideo()" title="停止">⏹️</button>
           <button class="control-btn" onclick="seekRelative(-10)" title="后退10秒">⏪</button>
           <button class="control-btn" onclick="seekRelative(10)" title="前进10秒">⏩</button>
-          <div class="volume-container">
-            <button class="control-btn" id="muteBtn" onclick="toggleMute()" title="静音">🔊</button>
-            <input type="range" class="volume-slider" id="volumeSlider"
-                   min="0" max="100" value="100"
-                   oninput="setVolume(this.value)">
-          </div>
+
           <span class="time-display" id="timeDisplay">0:00 / 0:00</span>
         </div>
 
@@ -293,7 +270,7 @@
 <script>
 let canvas = null, ctx = null, hiddenVideo = null;
 let hls = null, isPlaying = false, animationFrameId = null;
-let isFullscreen = false, isMuted = false, previousVolume = 100;
+let isFullscreen = false;
 let videoNativeWidth = 0, videoNativeHeight = 0;
 let _clickTimer = null; // 单击/双击区分定时器
 
@@ -301,8 +278,7 @@ function init() {
   canvas = document.getElementById('videoCanvas');
   ctx = canvas.getContext('2d');
   hiddenVideo = document.getElementById('hiddenVideo');
-  hiddenVideo.muted = false;
-  hiddenVideo.volume = 1.0;
+  hiddenVideo.muted = false;  // 允许有声播放
 
   if (typeof Hls === 'undefined') { showStatus('错误: HLS.js 未加载', 'error'); return; }
 
@@ -327,7 +303,7 @@ function init() {
   hiddenVideo.addEventListener('pause',       () => { isPlaying = false; document.getElementById('playBtn').textContent = '▶️'; });
   hiddenVideo.addEventListener('ended',       () => { isPlaying = false; document.getElementById('playBtn').textContent = '▶️'; cancelAnimationFrame(animationFrameId); });
   hiddenVideo.addEventListener('error',        (e) => { console.error('视频错误:', hiddenVideo.error); showStatus('播放错误，请检查地址', 'error'); hideLoading(); });
-  hiddenVideo.addEventListener('volumechange', () => updateVolumeIcon());
+
   hiddenVideo.addEventListener('timeupdate',   () => updateProgress());
 
   document.addEventListener('keydown', handleKeydown);
@@ -396,10 +372,7 @@ function handleKeydown(e) {
     case ' ': case 'Space':     e.preventDefault(); togglePlay(); break;
     case 'ArrowLeft':           e.preventDefault(); seekRelative(-10); break;
     case 'ArrowRight':          e.preventDefault(); seekRelative(10); break;
-    case 'ArrowUp':             e.preventDefault(); setVolume(parseInt(document.getElementById('volumeSlider').value)+10); break;
-    case 'ArrowDown':           e.preventDefault(); setVolume(parseInt(document.getElementById('volumeSlider').value)-10); break;
     case 'f': case 'F':        e.preventDefault(); toggleFullscreen(); break;
-    case 'm': case 'M':        e.preventDefault(); toggleMute(); break;
     case '0': case '1': case '2': case '3': case '4':
     case '5': case '6': case '7': case '8': case '9':
       if (hiddenVideo.duration) hiddenVideo.currentTime = hiddenVideo.duration * parseInt(e.key) / 10;
@@ -533,24 +506,6 @@ function updateProgress() {
   document.getElementById('timeDisplay').textContent = formatTime(hiddenVideo.currentTime)+' / '+formatTime(hiddenVideo.duration);
 }
 function setSpeed(s)  { if(hiddenVideo) hiddenVideo.playbackRate=parseFloat(s); }
-function setVolume(v) {
-  v=Math.max(0,Math.min(100,v));
-  hiddenVideo.volume=v/100;
-  document.getElementById('volumeSlider').value=v;
-  if(v>0&&isMuted){isMuted=false;hiddenVideo.muted=false;}
-  updateVolumeIcon();
-}
-function toggleMute() {
-  if(!hiddenVideo) return;
-  if(isMuted){ hiddenVideo.volume=previousVolume/100; document.getElementById('volumeSlider').value=previousVolume; isMuted=false; }
-  else { previousVolume=document.getElementById('volumeSlider').value; hiddenVideo.volume=0; document.getElementById('volumeSlider').value=0; isMuted=true; }
-  hiddenVideo.muted=isMuted;
-  updateVolumeIcon();
-}
-function updateVolumeIcon(){
-  const b=document.getElementById('muteBtn'); if(!b) return;
-  b.textContent = (hiddenVideo.muted||hiddenVideo.volume===0)?'🔇':(hiddenVideo.volume<0.5)?'🔉':'🔊';
-}
 function setQuality(l){
   if(!hls) return; l=parseInt(l); hls.currentLevel = (l===-1)?-1:l;
 }
