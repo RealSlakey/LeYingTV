@@ -951,9 +951,14 @@ function hideCanvasPlayer() {
     const iframe = document.getElementById('CanvasPlayerFrame');
     if (iframe) iframe.remove();
 
+    // 恢复搜索结果
     document.getElementById('resultsArea').classList.remove('hidden');
+    
+    // 恢复选集面板（detailModal）
     const detailModal = document.getElementById('modal');
-    if (detailModal) detailModal.classList.add('hidden');
+    if (detailModal) detailModal.classList.remove('hidden');
+    
+    // 恢复豆瓣区域（如果启用）
     if (localStorage.getItem('doubanEnabled') === 'true') {
         document.getElementById('doubanArea').classList.remove('hidden');
     }
