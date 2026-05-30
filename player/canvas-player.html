@@ -277,6 +277,7 @@ let _clickTimer = null; // 单击/双击区分定时器
 
 function init() {
   canvas = document.getElementById('videoCanvas');
+  console.log('canvas element:', canvas, 'offsetWidth:', canvas?.offsetWidth, 'offsetHeight:', canvas?.offsetHeight);
   ctx = canvas.getContext('2d');
   hiddenVideo = document.getElementById('hiddenVideo');
   hiddenVideo.muted = false;  // 允许有声播放
@@ -332,6 +333,16 @@ function init() {
   window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 300));
 
   console.log('初始化完成');
+  
+  // 调试：检查 playerContainer 和 canvas 的实际尺寸
+  setTimeout(() => {
+    const pc = document.getElementById('playerContainer');
+    const cv = document.getElementById('videoCanvas');
+    const ld = document.getElementById('loading');
+    console.log('playerContainer display:', pc.style.display, 'width:', pc.offsetWidth, 'height:', pc.offsetHeight);
+    console.log('canvas width:', cv.offsetWidth, 'height:', cv.offsetHeight);
+    console.log('loading display:', ld?.style.display);
+  }, 2000);
 }
 
 /* ---------- 控制栏显示/隐藏 ---------- */
