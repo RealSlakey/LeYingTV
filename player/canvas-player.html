@@ -233,10 +233,9 @@
       </div>
 
       <div class="controls-row">
-        <!-- 左侧：播放/暂停/停止/快退快进/音量/时间 -->
+        <!-- 左侧：播放/暂停/快退快进/时间 -->
         <div class="controls-left">
           <button class="control-btn" id="playBtn" onclick="togglePlay()" title="播放/暂停">▶️</button>
-          <button class="control-btn" onclick="stopVideo()" title="停止">⏹️</button>
           <button class="control-btn" onclick="seekRelative(-10)" title="后退10秒">⏪</button>
           <button class="control-btn" onclick="seekRelative(10)" title="前进10秒">⏩</button>
 
@@ -486,17 +485,6 @@ function togglePlay() {
       showStatus('播放失败: '+err.message, 'error');
     });
   }
-}
-
-function stopVideo() {
-  if (!hiddenVideo) return;
-  hiddenVideo.pause(); hiddenVideo.currentTime = 0;
-  isPlaying = false;
-  document.getElementById('playBtn').textContent = '▶️';
-  cancelAnimationFrame(animationFrameId);
-  ctx.fillStyle='#000'; ctx.fillRect(0,0,canvas.width,canvas.height);
-  document.getElementById('progressFill').style.width='0%';
-  document.getElementById('timeDisplay').textContent='0:00 / '+formatTime(hiddenVideo.duration);
 }
 
 function seek(e) {
