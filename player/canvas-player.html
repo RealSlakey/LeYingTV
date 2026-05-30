@@ -223,7 +223,7 @@
       x5-video-player-type="h5"
     ></video>
 
-    <div class="controls" id="controls">
+    <div class="controls show" id="controls">
       <!-- 进度条 -->
       <div class="progress-container" onclick="seek(event)">
         <div class="progress-track" id="progressTrack">
@@ -339,7 +339,6 @@ function toggleControls() {
     c.classList.remove('show');
   } else {
     c.classList.add('show');
-    resetControlsTimeout();
   }
 }
 function resetControlsTimeout() {
