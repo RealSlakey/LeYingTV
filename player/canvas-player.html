@@ -754,7 +754,7 @@ function loadHLSVideo(url) {
     
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
       hideLoading();
-      showStatus('点击画面开始播放', 'info');
+      showStatus('双击画面播放 · 单击显示控制栏', 'info');
     });
     
     hls.on(Hls.Events.ERROR, (e,d) => {
@@ -813,7 +813,7 @@ function loadNativeVideo(url) {
   hideLoading();
   hiddenVideo.src = url;
   hiddenVideo.load();
-  showStatus('点击画面开始播放', 'info');
+  showStatus('双击画面播放 · 单击显示控制栏', 'info');
 }
 
 // 降级方案：当 HLS 失败时尝试原生播放
