@@ -209,32 +209,106 @@
     .status.error { background: rgba(239,68,68,0.9); border-color: rgba(239,68,68,0.4); }
     .status.warn { background: rgba(245,158,11,0.85); border-color: rgba(245,158,11,0.3); }
     
-    /* 错误状态下的关闭按钮覆盖层 */
-    .error-overlay {
+    /* 错误状态面板 */
+    .error-panel {
       position: fixed;
-      bottom: 80px;
-      right: 20px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       z-index: 10001;
+      background: rgba(15,23,42,0.95);
+      backdrop-filter: blur(16px);
+      border-radius: 16px;
+      padding: 32px;
+      min-width: 340px;
+      max-width: 90vw;
+      text-align: center;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.08);
       pointer-events: auto;
+      display: none;
     }
-    .error-overlay button {
-      background: rgba(239,68,68,0.9);
-      border: none;
-      color: white;
-      width: 60px;
-      height: 60px;
-      border-radius: 30px;
-      font-size: 28px;
-      cursor: pointer;
+    .error-panel.show { display: block; }
+    
+    .error-panel-icon {
+      font-size: 56px;
+      margin-bottom: 12px;
+    }
+    .error-panel-icon.error { color: #f87171; }
+    .error-panel-icon.warn { color: #fbbf24; }
+    
+    .error-panel-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    
+    .error-panel-desc {
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+    
+    .error-panel-actions {
       display: flex;
-      align-items: center;
+      gap: 10px;
       justify-content: center;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
-      transition: all 0.2s;
+      flex-wrap: wrap;
     }
-    .error-overlay button:hover {
+    
+    .error-panel-btn {
+      padding: 10px 22px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #fff;
+      min-height: 40px;
+    }
+    .error-panel-btn .material-icons-outlined { font-size: 18px; }
+    
+    .error-panel-btn.primary {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      box-shadow: 0 4px 12px rgba(59,130,246,0.35);
+    }
+    .error-panel-btn.primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(59,130,246,0.45);
+    }
+    
+    .error-panel-btn.secondary {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .error-panel-btn.secondary:hover {
+      background: rgba(255,255,255,0.18);
+    }
+    
+    .error-panel-btn.danger {
+      background: rgba(239,68,68,0.85);
+    }
+    .error-panel-btn.danger:hover {
       background: rgba(220,38,38,1);
-      transform: scale(1.1);
+    }
+    
+    .error-panel-hint {
+      margin-top: 16px;
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.6;
+    }
+    
+    /* 小屏适配 */
+    @media (max-width: 480px) {
+      .error-panel { min-width: auto; width: calc(100vw - 48px); padding: 24px 20px; }
+      .error-panel-actions { flex-direction: column; }
+      .error-panel-btn { width: 100%; justify-content: center; }
     }
     
     /* 错误状态时 canvas 可点击 */
@@ -284,11 +358,15 @@
 
   <div class="loading" id="loading"><div class="spinner"></div></div>
   <div class="status info" id="status">正在初始化...</div>
-  <!-- 错误状态下的快捷操作按钮 -->
-  <div class="error-overlay" id="errorOverlay" style="display:none;">
-    <button onclick="closePlayer()" title="关闭播放器">
-      <span class="material-icons-outlined">close</span>
-    </button>
+  <!-- 错误状态面板 -->
+  <div class="error-panel" id="errorPanel">
+    <div class="error-panel-icon error" id="errorPanelIcon">
+      <span class="material-icons-outlined">error_outline</span>
+    </div>
+    <div class="error-panel-title" id="errorPanelTitle">视频加载失败</div>
+    <div class="error-panel-desc" id="errorPanelDesc">当前视频源无法正常播放</div>
+    <div class="error-panel-actions" id="errorPanelActions"></div>
+    <div class="error-panel-hint" id="errorPanelHint">点击画面其他区域可关闭此提示</div>
   </div>
 
   <div id="playerContainer">
@@ -405,9 +483,12 @@ function init() {
   // 重要：即使在错误状态下也要响应点击
   canvas.addEventListener('click', (e) => {
     e.stopPropagation();
-    // 如果有错误状态显示，先隐藏它
-    if (currentStatusType === 'error' || currentStatusType === 'warn') {
-      hideStatus();
+    // 如果错误面板打开，点击画面关闭它
+    const errPanel = document.getElementById('errorPanel');
+    if (errPanel && errPanel.classList.contains('show')) {
+      hideErrorPanel();
+      _clickTimer = setTimeout(() => { toggleControls(); _clickTimer = null; }, 300);
+      return;
     }
     if (_clickTimer) clearTimeout(_clickTimer);
     _clickTimer = setTimeout(() => { toggleControls(); _clickTimer = null; }, 300);
@@ -486,34 +567,137 @@ function handleKeydown(e) {
 }
 
 /* ---------- 状态提示 ---------- */
-let currentStatusType = null; // 记录当前状态类型
+let currentStatusType = null;
+let errorRetryCount = 0;
+const MAX_ERROR_RETRY = 3;
+let lastVideoUrl = '';
 
 function showStatus(msg, type) {
   const s = document.getElementById('status');
-  s.textContent = msg; 
-  s.className = 'status ' + type; 
+  s.textContent = msg;
+  s.className = 'status ' + type;
   s.style.display = 'block';
   currentStatusType = type;
   
-  // 如果是错误或警告状态，显示关闭按钮并确保控制栏可见
   if (type === 'error' || type === 'warn') {
-    document.getElementById('errorOverlay').style.display = 'block';
+    showErrorPanel(msg, type);
     document.body.classList.add('error-state');
-    // 强制显示控制栏，让用户可以关闭播放器
     document.getElementById('controls').classList.add('show');
-    hideLoading(); // 隐藏加载动画
+    hideLoading();
   } else {
-    document.getElementById('errorOverlay').style.display = 'none';
+    hideErrorPanel();
     if (type !== 'info') {
       document.body.classList.remove('error-state');
     }
   }
 }
-function hideStatus() { 
+
+function hideStatus() {
   document.getElementById('status').style.display = 'none';
-  document.getElementById('errorOverlay').style.display = 'none';
+  hideErrorPanel();
   document.body.classList.remove('error-state');
   currentStatusType = null;
+}
+
+// 显示错误面板（带操作按钮）
+function showErrorPanel(msg, type) {
+  const panel = document.getElementById('errorPanel');
+  const iconEl = document.getElementById('errorPanelIcon');
+  const titleEl = document.getElementById('errorPanelTitle');
+  const descEl = document.getElementById('errorPanelDesc');
+  const actionsEl = document.getElementById('errorPanelActions');
+  const hintEl = document.getElementById('errorPanelHint');
+  
+  iconEl.className = 'error-panel-icon ' + type;
+  titleEl.textContent = type === 'error' ? '视频加载失败' : '播放遇到问题';
+  
+  // 根据错误类型设置不同的描述和建议
+  let desc = '';
+  let hint = '';
+  let actions = '';
+  
+  if (msg.includes('manifestLoadError') || msg.includes('MANIFEST')) {
+    desc = '视频源列表文件（M3U8）无法加载，可能是源地址失效或服务器限制。';
+    hint = '💡 建议：尝试切换到其他线路或画质选项，通常可以解决此类问题。';
+    actions = `
+      <button class="error-panel-btn primary" onclick="retryLoadVideo()">
+        <span class="material-icons-outlined">refresh</span>重新加载
+      </button>
+      <button class="error-panel-btn secondary" onclick="closePlayer()">
+        <span class="material-icons-outlined">close</span>返回选集
+      </button>`;
+  } else if (msg.includes('网络错误') || msg.includes('NETWORK_ERROR')) {
+    desc = '网络连接不稳定或视频服务器暂时无响应。';
+    hint = '💡 建议：检查网络连接后重试，或尝试切换到其他视频源。';
+    actions = `
+      <button class="error-panel-btn primary" onclick="retryLoadVideo()">
+        <span class="material-icons-outlined">refresh</span>重新加载 (${MAX_ERROR_RETRY - errorRetryCount}/${MAX_ERROR_RETRY})
+      </button>
+      <button class="error-panel-btn secondary" onclick="closePlayer()">
+        <span class="material-icons-outlined">close</span>返回选集
+      </button>`;
+  } else if (msg.includes('媒体格式') || msg.includes('MEDIA_ERROR')) {
+    desc = '视频编码格式不受支持或媒体数据损坏。';
+    hint = '💡 建议：尝试切换到不同画质的视频源（如从 1080p 切换到 720p）。';
+    actions = `
+      <button class="error-panel-btn primary" onclick="switchQualityFallback()">
+        <span class="material-icons-outlined">tune</span>切换画质
+      </button>
+      <button class="error-panel-btn secondary" onclick="retryLoadVideo()">
+        <span class="material-icons-outlined">refresh</span>重试
+      </button>
+      <button class="error-panel-btn danger" onclick="closePlayer()">
+        <span class="material-icons-outlined">close</span>返回选集
+      </button>`;
+  } else {
+    desc = msg || '未知错误，请稍后重试。';
+    hint = '💡 如果问题持续存在，建议更换视频源或联系管理员。';
+    actions = `
+      <button class="error-panel-btn primary" onclick="retryLoadVideo()">
+        <span class="material-icons-outlined">refresh</span>重新加载
+      </button>
+      <button class="error-panel-btn secondary" onclick="closePlayer()">
+        <span class="material-icons-outlined">close</span>返回选集
+      </button>`;
+  }
+  
+  descEl.textContent = desc;
+  hintEl.textContent = hint;
+  actionsEl.innerHTML = actions;
+  panel.classList.add('show');
+}
+
+function hideErrorPanel() {
+  document.getElementById('errorPanel').classList.remove('show');
+}
+
+// 重试加载视频
+function retryLoadVideo() {
+  if (!lastVideoUrl) return;
+  errorRetryCount++;
+  hideErrorPanel();
+  showLoading();
+  showStatus('正在重新加载...', 'info');
+  setTimeout(() => loadVideo(lastVideoUrl), 500);
+}
+
+// 切换画质作为降级方案
+function switchQualityFallback() {
+  const qSelect = document.getElementById('qualitySelect');
+  if (qSelect && qSelect.options.length > 1) {
+    // 尝试选择下一个画质
+    const currentIndex = qSelect.selectedIndex;
+    const nextIndex = (currentIndex + 1) % qSelect.options.length;
+    if (nextIndex !== currentIndex) {
+      qSelect.selectedIndex = nextIndex;
+      setQuality(qSelect.value);
+      showStatus('已切换画质，正在重新加载...', 'info');
+      retryLoadVideo();
+      return;
+    }
+  }
+  // 没有可切换的画质，直接重试
+  retryLoadVideo();
 }
 function showLoading() { document.getElementById('loading').style.display = 'block'; }
 function hideLoading() { document.getElementById('loading').style.display = 'none'; }
@@ -521,6 +705,7 @@ function hideLoading() { document.getElementById('loading').style.display = 'non
 /* ---------- 加载视频 ---------- */
 function loadVideo(url) {
   if (!url) { showStatus('视频地址为空', 'error'); return; }
+  lastVideoUrl = url; // 记住当前 URL 用于重试
   showLoading();
   try { loadHLSVideo(url); }
   catch(err) { console.error(err); showStatus('加载失败: '+err.message, 'error'); hideLoading(); }
@@ -579,11 +764,14 @@ function loadHLSVideo(url) {
         switch(d.type) {
           case Hls.ErrorTypes.NETWORK_ERROR:
             console.log('网络错误，尝试恢复...');
-            showStatus('网络错误，正在重试...', 'warn');
-            // 尝试重新加载
-            setTimeout(() => {
-              if (hls) hls.startLoad();
-            }, 1000);
+            if (errorRetryCount < MAX_ERROR_RETRY) {
+              showStatus('网络错误，正在重试...', 'warn');
+              setTimeout(() => {
+                if (hls) hls.startLoad();
+              }, 1000);
+            } else {
+              showStatus('网络错误: 多次重试失败，请检查网络或更换视频源', 'error');
+            }
             break;
             
           case Hls.ErrorTypes.MEDIA_ERROR:
