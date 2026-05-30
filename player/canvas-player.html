@@ -342,31 +342,6 @@ function init() {
 /* ---------- 控制栏显示/隐藏 ---------- */
 let controlsTimeout = null;
 
-// MutationObserver 监控 style 属性变化
-document.addEventListener('DOMContentLoaded', () => {
-  const controls = document.getElementById('controls');
-  
-  // 监控 style 属性变化
-  const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
-        console.trace('style 属性被修改:', controls.getAttribute('style'), new Error().stack);
-      }
-    });
-  });
-  observer.observe(controls, { attributes: true });
-  
-  // 监控 opacity 变化（通过 CSS 变量或其他方式）
-  let lastOpacity = getComputedStyle(controls).opacity;
-  setInterval(() => {
-    const currentOpacity = getComputedStyle(controls).opacity;
-    if (currentOpacity !== lastOpacity) {
-      console.log('opacity 变化:', lastOpacity, '->', currentOpacity, 'class:', controls.className);
-      lastOpacity = currentOpacity;
-    }
-  }, 100);
-});
-
 function toggleControls() {
   const c = document.getElementById('controls');
   if (c.classList.contains('show')) {
