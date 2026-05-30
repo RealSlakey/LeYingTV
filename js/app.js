@@ -941,7 +941,7 @@ function showCanvasPlayer(url) {
     iframe.id = 'CanvasPlayerFrame';
     iframe.className = 'fixed inset-0 w-full h-full z-40 border-0';
     iframe.allow = 'autoplay; fullscreen';
-    iframe.src = '/player/canvas-player.html?url=' + encodeURIComponent(url);
+    iframe.src = '/player/canvas-player.html?url=' + encodeURIComponent(url) + '&vpos=' + (localStorage.getItem('playerVPos') || 'center');
     document.body.appendChild(iframe);
 
     // 关闭按钮已在 canvas-player.html 的控制栏内

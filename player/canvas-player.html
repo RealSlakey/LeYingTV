@@ -438,6 +438,7 @@ let hls = null, isPlaying = false, animationFrameId = null;
 let isFullscreen = false;
 let videoNativeWidth = 0, videoNativeHeight = 0;
 let _clickTimer = null; // 单击/双击区分定时器
+let verticalPosition = 'center'; // 播放器垂直位置: top / center / bottom
 
 function init() {
   canvas = document.getElementById('videoCanvas');
@@ -452,6 +453,7 @@ function init() {
 
   const urlParams = new URLSearchParams(window.location.search);
   const videoUrl = urlParams.get('url');
+  verticalPosition = urlParams.get('vpos') || 'center';
   if (!videoUrl) { showStatus('未提供视频地址', 'info'); return; }
   showStatus('正在加载视频...', 'info');
   setTimeout(() => loadVideo(decodeURIComponent(videoUrl)), 300);
@@ -549,6 +551,19 @@ function resizeCanvas() {
   canvas.style.height = h + 'px';
   canvas.width  = videoNativeWidth;
   canvas.height = videoNativeHeight;
+  
+  // 根据垂直位置设置 canvas 的定位
+  if (h < ch) {
+    let topPos;
+    switch (verticalPosition) {
+      case 'top':    topPos = 0; break;
+      case 'bottom': topPos = ch - h; break;
+      default:       topPos = (ch - h) / 2; break; // center
+    }
+    canvas.style.marginTop = topPos + 'px';
+  } else {
+    canvas.style.marginTop = '0';
+  }
 }
 
 /* ---------- 键盘快捷键 ---------- */

@@ -154,7 +154,7 @@
                 </div>
 
                 <!-- 新标签页打开开关 -->
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between mb-3 pb-3 border-b border-[#222]">
                     <div>
                         <label class="text-sm font-medium text-gray-400">新标签页打开</label>
                         <p class="text-xs text-gray-500 mt-1">关闭则在当前页打开 TeslaPlayer</p>
@@ -164,6 +164,19 @@
                         <div class="toggle-bg bg-[#333] w-12 h-6 rounded-full transition-colors duration-300 ease-in-out"></div>
                         <div class="toggle-dot absolute w-5 h-5 bg-white rounded-full top-0.5 left-0.5 transition-transform duration-300 ease-in-out"></div>
                     </div>
+                </div>
+
+                <!-- 播放器垂直位置 -->
+                <div class="flex items-center justify-between">
+                    <div>
+                        <label class="text-sm font-medium text-gray-400">播放器垂直位置</label>
+                        <p class="text-xs text-gray-500 mt-1">调整画面位置避免车机屏幕反光</p>
+                    </div>
+                    <select id="playerVPos" class="bg-[#222] border border-[#333] text-white text-sm rounded px-2 py-1.5 focus:outline-none focus:border-blue-500 cursor-pointer" onchange="savePlayerVPos(this.value)">
+                        <option value="center">居中</option>
+                        <option value="top">置顶</option>
+                        <option value="bottom">置底</option>
+                    </select>
                 </div>
             </div>
 
@@ -433,5 +446,11 @@
 
     <!-- 添加弹窗和URL搜索参数处理脚本 -->
     <script src="js/index-page.js"></script>
+    <script>
+    // 播放器垂直位置保存
+    function savePlayerVPos(val) {
+        localStorage.setItem('playerVPos', val);
+    }
+    </script>
 </body>
 </html>

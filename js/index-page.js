@@ -1,5 +1,10 @@
 // 页面加载后显示弹窗脚本
 document.addEventListener('DOMContentLoaded', function() {
+    // 播放器垂直位置初始化
+    const savedVPos = localStorage.getItem('playerVPos') || 'center';
+    const vposSelect = document.getElementById('playerVPos');
+    if (vposSelect) vposSelect.value = savedVPos;
+    
     // 弹窗显示脚本
     // 检查用户是否已经看过声明
     const hasSeenDisclaimer = localStorage.getItem('hasSeenDisclaimer');
