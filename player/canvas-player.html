@@ -60,7 +60,6 @@
       pointer-events: none; /* 让点击穿透到 canvas */
       min-height: 48px;
     }
-    #playerContainer:hover .controls,
     .controls.show { opacity: 1; pointer-events: auto; }
     .controls > * { pointer-events: auto; } /* 内部元素可点击 */
 
@@ -277,7 +276,6 @@ let _clickTimer = null; // 单击/双击区分定时器
 
 function init() {
   canvas = document.getElementById('videoCanvas');
-  console.log('canvas element:', canvas, 'offsetWidth:', canvas?.offsetWidth, 'offsetHeight:', canvas?.offsetHeight);
   ctx = canvas.getContext('2d');
   hiddenVideo = document.getElementById('hiddenVideo');
   hiddenVideo.muted = false;  // 允许有声播放
@@ -315,13 +313,11 @@ function init() {
 
   // 单击画面 → 切换控制栏显示/隐藏；双击 → 播放/暂停
   canvas.addEventListener('click', (e) => {
-    console.log('canvas click event fired');
     e.stopPropagation();
     if (_clickTimer) clearTimeout(_clickTimer);
-    _clickTimer = setTimeout(() => { console.log('toggleControls called from click'); toggleControls(); _clickTimer = null; }, 300);
+    _clickTimer = setTimeout(() => { toggleControls(); _clickTimer = null; }, 300);
   });
   canvas.addEventListener('dblclick', (e) => {
-    console.log('canvas dblclick event fired');
     e.stopPropagation();
     if (_clickTimer) { clearTimeout(_clickTimer); _clickTimer = null; }
     togglePlay();
@@ -333,29 +329,16 @@ function init() {
   window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 300));
 
   console.log('初始化完成');
-  
-  // 调试：检查 playerContainer 和 canvas 的实际尺寸
-  setTimeout(() => {
-    const pc = document.getElementById('playerContainer');
-    const cv = document.getElementById('videoCanvas');
-    const ld = document.getElementById('loading');
-    console.log('playerContainer display:', pc.style.display, 'width:', pc.offsetWidth, 'height:', pc.offsetHeight);
-    console.log('canvas width:', cv.offsetWidth, 'height:', cv.offsetHeight);
-    console.log('loading display:', ld?.style.display);
-  }, 2000);
 }
 
 /* ---------- 控制栏显示/隐藏 ---------- */
 let controlsTimeout = null;
 function toggleControls() {
   const c = document.getElementById('controls');
-  console.log('toggleControls called, current show:', c.classList.contains('show'), 'opacity:', window.getComputedStyle(c).opacity);
   if (c.classList.contains('show')) {
     c.classList.remove('show');
-    console.log('Removed show class');
   } else {
     c.classList.add('show');
-    console.log('Added show class');
     resetControlsTimeout();
   }
 }
