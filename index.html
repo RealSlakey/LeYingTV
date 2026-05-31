@@ -184,11 +184,11 @@
                         <label class="text-sm font-medium set-label">播放器垂直位置</label>
                         <p class="text-xs set-desc mt-1">调整画面位置避免车机屏幕反光</p>
                     </div>
-                    <select id="playerVPos" class="set-input border border-set-border set-text text-sm rounded px-2 py-1.5 focus:outline-none focus:border-blue-500 cursor-pointer" onchange="savePlayerVPos(this.value)">
-                        <option value="center">居中</option>
-                        <option value="top">置顶</option>
-                        <option value="bottom">置底</option>
-                    </select>
+                    <div class="flex gap-1" id="playerVPosGroup">
+                        <button type="button" class="vpos-btn set-btn-episode px-3 py-1.5 rounded-lg text-sm font-medium transition-all" data-value="top">上</button>
+                        <button type="button" class="vpos-btn set-btn-episode px-3 py-1.5 rounded-lg text-sm font-medium transition-all" data-value="center">中</button>
+                        <button type="button" class="vpos-btn set-btn-episode px-3 py-1.5 rounded-lg text-sm font-medium transition-all" data-value="bottom">下</button>
+                    </div>
                 </div>
 
                 <!-- 自动白天/黑夜模式 -->

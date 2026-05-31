@@ -1,9 +1,16 @@
 // 页面加载后显示弹窗脚本
 document.addEventListener('DOMContentLoaded', function() {
-    // 播放器垂直位置初始化
+    // 播放器垂直位置初始化（按钮组）
     const savedVPos = localStorage.getItem('playerVPos') || 'center';
-    const vposSelect = document.getElementById('playerVPos');
-    if (vposSelect) vposSelect.value = savedVPos;
+    const vposBtns = document.querySelectorAll('#playerVPosGroup .vpos-btn');
+    vposBtns.forEach(function(btn) {
+        if (btn.dataset.value === savedVPos) btn.classList.add('active');
+        btn.addEventListener('click', function() {
+            vposBtns.forEach(function(b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+            localStorage.setItem('playerVPos', btn.dataset.value);
+        });
+    });
     
     // 弹窗显示脚本
     // 检查用户是否已经看过声明
