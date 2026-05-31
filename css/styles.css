@@ -152,6 +152,8 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  overflow: visible;
+  display: inline-block;
 }
 
 [data-theme="light"] .gradient-text {
