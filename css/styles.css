@@ -61,13 +61,13 @@
 /* ---------- Light Theme ---------- */
 [data-theme="light"] {
   /* Surface */
-  --md-surface: #FFFBFE;
-  --md-surface-dim: #F7F2FA;
+  --md-surface: #FFFFFF;
+  --md-surface-dim: #F5F5F5;
   --md-surface-container-lowest: #FFFFFF;
-  --md-surface-container-low: #F3EDF7;
-  --md-surface-container: #ECE6F0;
-  --md-surface-container-high: #E6E0E9;
-  --md-surface-container-highest: #E6E0E9;
+  --md-surface-container-low: #FAFAFA;
+  --md-surface-container: #F5F5F5;
+  --md-surface-container-high: #EEEEEE;
+  --md-surface-container-highest: #E0E0E0;
   --md-on-surface: #1C1B1F;
   --md-on-surface-variant: #49454F;
 
@@ -135,10 +135,7 @@ body {
 }
 
 [data-theme="light"] .page-bg {
-  background:
-    radial-gradient(ellipse at 20% 50%, rgba(103, 80, 164, 0.08) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 20%, rgba(200, 180, 255, 0.15) 0%, transparent 50%),
-    linear-gradient(180deg, var(--md-surface-dim) 0%, #EBE4F5 100%);
+  background: linear-gradient(180deg, #FFFFFF 0%, #F5F5F5 100%);
 }
 
 /* ---------- Typography ---------- */
