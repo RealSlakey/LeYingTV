@@ -963,3 +963,28 @@ function showImportBox(fun) {
         fun(fileInput.files[0]);
     });
 }
+
+// ══════════════
+//  强制刷新：清除前端缓存并重新加载
+// ═══
+
+async function forceRefresh() {
+    // 🗑️ Step 1 – 清空所有 Cache Storage
+    if ('caches' in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map(k => caches.delete(k)));
+        console.log('[ForceRefresh] Cache Storage Cleared');
+    }
+
+    // 🔌 Step 2 – 如有 Service Worker 则注销
+    if ('serviceWorker' in navigator) {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        for (const reg of regs) { await reg.unregister(); }
+        console.log('[ForceRefresh] Service Worker unregistered');
+    }
+
+    // 🚀 Step 3 – 通过时间戳 URL 绕过 HTTP 缓存
+    const url = new URL(location.href);
+    url.searchParams.set('_t', Date.now());
+    location.href = url.toString();
+}
