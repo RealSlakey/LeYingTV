@@ -464,7 +464,33 @@ export async function onRequest(context) {
             }
         }
 
+        // --- 判断是否为二进制资源（图片、视频、音频等）---
+        const isBinary = isMediaFile(targetUrl, null);
+
         // --- 实际请求 ---
+        if (isBinary) {
+            // 二进制资源（图片等）：用 arrayBuffer 透传，不经过 text() 处理
+            logDebug(`检测到二进制资源，直接透传: ${targetUrl}`);
+            const fetchHeaders = new Headers({
+                'User-Agent': getRandomUserAgent(),
+                'Accept': 'image/*,*/*;q=0.8',
+                'Accept-Language': request.headers.get('Accept-Language') || 'zh-CN,zh;q=0.9,en;q=0.8',
+                'Referer': new URL(targetUrl).origin
+            });
+            const binaryResponse = await fetch(targetUrl, { headers: fetchHeaders, redirect: 'follow' });
+            if (!binaryResponse.ok) {
+                throw new Error(`HTTP error ${binaryResponse.status}: ${binaryResponse.statusText} for binary resource: ${targetUrl}`);
+            }
+            const binaryBody = await binaryResponse.arrayBuffer();
+            const finalHeaders = new Headers(binaryResponse.headers);
+            finalHeaders.set('Cache-Control', `public, max-age=${CACHE_TTL}`);
+            finalHeaders.set("Access-Control-Allow-Origin", "*");
+            finalHeaders.set("Access-Control-Allow-Methods", "GET, HEAD, POST, OPTIONS");
+            finalHeaders.set("Access-Control-Allow-Headers", "*");
+            return new Response(binaryBody, { status: 200, headers: finalHeaders });
+        }
+
+        // --- 文本资源（API、M3U8、字幕等）---
         const { content, contentType, responseHeaders } = await fetchContentWithType(targetUrl);
 
         // --- 写入缓存 (KV) ---
@@ -473,12 +499,10 @@ export async function onRequest(context) {
                  const headersToCache = {};
                  responseHeaders.forEach((value, key) => { headersToCache[key.toLowerCase()] = value; });
                  const cacheValue = { body: content, headers: JSON.stringify(headersToCache) };
-                 // 注意 KV 写入限制
                  waitUntil(kvNamespace.put(cacheKey, JSON.stringify(cacheValue), { expirationTtl: CACHE_TTL }));
                  logDebug(`已将原始内容写入缓存: ${targetUrl}`);
             } catch (kvError) {
                  logDebug(`向 KV 写入缓存失败 (${cacheKey}): ${kvError.message}`);
-                 // 写入失败不影响返回结果
             }
         }
 
@@ -491,7 +515,6 @@ export async function onRequest(context) {
             logDebug(`内容不是 M3U8 (类型: ${contentType})，直接返回: ${targetUrl}`);
             const finalHeaders = new Headers(responseHeaders);
             finalHeaders.set('Cache-Control', `public, max-age=${CACHE_TTL}`);
-            // 添加 CORS 头，确保非 M3U8 内容也能跨域访问（例如图片、字幕文件等）
             finalHeaders.set("Access-Control-Allow-Origin", "*");
             finalHeaders.set("Access-Control-Allow-Methods", "GET, HEAD, POST, OPTIONS");
             finalHeaders.set("Access-Control-Allow-Headers", "*");
