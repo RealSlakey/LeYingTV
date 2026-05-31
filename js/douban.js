@@ -511,7 +511,7 @@ function renderDoubanCards(data, container) {
         // 循环创建每个影视卡片
         data.subjects.forEach(item => {
             const card = document.createElement("div");
-            card.className = "bg-[#111] hover:bg-[#222] transition-all duration-300 rounded-lg overflow-hidden flex flex-col transform hover:scale-105 shadow-md hover:shadow-lg";
+            card.className = "douban-movie-card";
             
             // 生成卡片内容，确保安全显示（防止XSS）
             const safeTitle = item.title
@@ -530,24 +530,24 @@ function renderDoubanCards(data, container) {
             
             // 为不同设备优化卡片布局
             card.innerHTML = `
-                <div class="relative w-full aspect-[2/3] overflow-hidden cursor-pointer" onclick="fillAndSearchWithDouban('${safeTitle}')">
+                <div class="douban-movie-card-poster" onclick="fillAndSearchWithDouban('${safeTitle}')">
                     <img src="${proxiedCoverUrl}" alt="${safeTitle}" 
-                        class="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                        class="douban-movie-card-img"
                         onerror="this.onerror=null; this.src='${originalCoverUrl}'; this.setAttribute('referrerpolicy','no-referrer');"
                         loading="lazy">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
-                    <div class="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded-sm">
-                        <span class="text-yellow-400">★</span> ${safeRate}
+                    <div class="douban-movie-card-overlay"></div>
+                    <div class="douban-movie-card-rate">
+                        <span class="douban-star">★</span> ${safeRate}
                     </div>
-                    <div class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded-sm hover:bg-[#333] transition-colors">
-                        <a href="${item.url}" target="_blank" rel="noopener noreferrer" title="在豆瓣查看" onclick="event.stopPropagation();">
+                    <div class="douban-movie-card-link" onclick="event.stopPropagation();">
+                        <a href="${item.url}" target="_blank" rel="noopener noreferrer" title="在豆瓣查看">
                             🔗
                         </a>
                     </div>
                 </div>
-                <div class="p-2 text-center bg-[#111]">
+                <div class="douban-movie-card-title">
                     <button onclick="fillAndSearchWithDouban('${safeTitle}')" 
-                            class="text-sm font-medium text-white truncate w-full hover:text-pink-400 transition"
+                            class="douban-movie-card-name"
                             title="${safeTitle}">
                         ${safeTitle}
                     </button>
