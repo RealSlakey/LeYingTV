@@ -28,25 +28,25 @@
 }
 
 /* ---------- Search Box (MD3 Search Bar - Filled) ---------- */
-.search-box {
+/* Search bar container - the direct child div with flex */
+#searchArea .flex.items-stretch {
   height: 56px;
   background: var(--md-surface-container-high);
   border-radius: var(--md-radius-full);
-  box-shadow: var(--md-evelation-1);
+  box-shadow: var(--md-elevation-1);
   border: 1px solid var(--md-outline-variant);
   overflow: hidden;
   display: flex;
   align-items: stretch;
   transition: border-color var(--md-motion), box-shadow var(--md-motion);
 }
-.search-box:focus-within {
+#searchArea .flex.items-stretch:focus-within {
   border-color: var(--md-primary);
-  box-shadow: 0 0 0 1px var(--md-primary), var(--md-evelation-2);
+  box-shadow: 0 0 0 1px var(--md-primary), var(--md-elevation-2);
 }
 
-/* Home button inside search */
-.search-box > a,
-.search-box > button:first-child {
+/* Home button (left capsule end) */
+#searchArea .flex.items-stretch > button:first-child {
   background: var(--md-surface-container-highest) !important;
   color: var(--md-on-surface) !important;
   font-weight: 500;
@@ -63,14 +63,12 @@
   transition: background var(--md-motion);
   white-space: nowrap;
 }
-.search-box > a:hover,
-.search-box > button:first-child:hover {
-  background: var(--md-surface-container-highest) !important;
+#searchArea .flex.items-stretch > button:first-child:hover {
   opacity: 0.85;
 }
 
-/* Search input */
-.search-input {
+/* Search input (center, no radius) */
+#searchArea .flex.items-stretch > input[type="text"] {
   flex: 1;
   background: transparent !important;
   border: none !important;
@@ -81,12 +79,12 @@
   outline: none;
   min-width: 0;
 }
-.search-input::placeholder {
+#searchArea .flex.items-stretch > input[type="text"]::placeholder {
   color: var(--md-on-surface-variant);
   opacity: 0.6;
 }
 
-/* Clear button */
+/* Clear button (center, no radius) */
 #clearSearchInput {
   background: transparent !important;
   border: none !important;
@@ -105,9 +103,8 @@
   height: 20px;
 }
 
-/* Search button (Filled Button) */
-.search-button,
-.search-box > button:last-child {
+/* Search button (right capsule end) */
+#searchArea .flex.items-stretch > button:last-child {
   background: var(--md-primary) !important;
   color: var(--md-on-primary) !important;
   font-weight: 500;
@@ -120,10 +117,9 @@
   font-family: 'Inter', sans-serif;
   white-space: nowrap;
 }
-.search-button:hover,
-.search-box > button:last-child:hover {
+#searchArea .flex.items-stretch > button:last-child:hover {
   background: var(--md-primary-light) !important;
-  box-shadow: var(--md-evelation-1);
+  box-shadow: var(--md-elevation-1);
 }
 
 /* ---------- Recent Search Tags (MD3 Filter Chip) ---------- */
