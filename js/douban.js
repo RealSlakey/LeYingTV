@@ -533,7 +533,7 @@ function renderDoubanCards(data, container) {
                 <div class="douban-movie-card-poster" onclick="fillAndSearchWithDouban('${safeTitle}')">
                     <img src="${proxiedCoverUrl}" alt="${safeTitle}" 
                         class="douban-movie-card-img"
-                        onerror="this.onerror=null; this.src='${originalCoverUrl}'; this.setAttribute('referrerpolicy','no-referrer');"
+                        onerror="this.onerror=null; this.closest('.douban-movie-card-poster').classList.add('has-error');"
                         loading="lazy">
                     <div class="douban-movie-card-overlay"></div>
                     <div class="douban-movie-card-rate">

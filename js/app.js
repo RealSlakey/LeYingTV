@@ -673,7 +673,7 @@ async function search() {
                         <div class="search-card-img-container">
                             <img src="${item.vod_pic}" alt="${safeName}" 
                                  class="search-card-img" 
-                                 onerror="this.onerror=null; this.src='https://via.placeholder.com/300x450?text=无封面'; this.classList.add('object-contain');" 
+                                 onerror="this.onerror=null; this.closest('.search-card-img-container').classList.add('has-error');" 
                                  loading="lazy">
                             <div class="search-card-img-overlay"></div>
                         </div>` : ''}
