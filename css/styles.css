@@ -298,14 +298,16 @@ body {
 #adFilterToggle:checked + .toggle-bg,
 #doubanToggle:checked + .toggle-bg,
 #newTabToggle:checked + .toggle-bg,
-#yellowFilterToggle:checked + .toggle-bg {
+#yellowFilterToggle:checked + .toggle-bg,
+#autoThemeToggle:checked + .toggle-bg {
   background: var(--md-primary) !important;
   border-color: var(--md-primary) !important;
 }
 #adFilterToggle:checked ~ .toggle-dot,
 #doubanToggle:checked ~ .toggle-dot,
 #newTabToggle:checked ~ .toggle-dot,
-#yellowFilterToggle:checked ~ .toggle-dot {
+#yellowFilterToggle:checked ~ .toggle-dot,
+#autoThemeToggle:checked ~ .toggle-dot {
   background: var(--md-on-primary) !important;
   transform: translateX(1.5rem) !important;
 }

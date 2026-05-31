@@ -503,7 +503,7 @@
 
     // 初始化主题
     function initTheme() {
-        const autoEnabled = localStorage.getItem(AUTO_THEME_KEY) === 'true';
+        const autoEnabled = localStorage.getItem(AUTO_THEME_KEY) !== 'false';
         const autoToggle = document.getElementById('autoThemeToggle');
         if (autoToggle) {
             autoToggle.checked = autoEnabled;
@@ -540,7 +540,7 @@
 
     // 监听系统主题变化（用户切换系统深/浅色模式时自动跟随）
     window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', function (e) {
-        if (localStorage.getItem(AUTO_THEME_KEY) === 'true') {
+        if (localStorage.getItem(AUTO_THEME_KEY) !== 'false') {
             applyTheme(e.matches ? 'light' : 'dark');
         }
     });
