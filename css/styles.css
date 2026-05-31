@@ -148,10 +148,30 @@ body {
 
 /* ---------- Typography ---------- */
 .gradient-text {
-  background: linear-gradient(135deg, var(--md-primary-light), #D0BCFF);
+  background: linear-gradient(135deg, var(--md-primary), var(--md-primary-light));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+[data-theme="light"] .gradient-text {
+  background: linear-gradient(135deg, #1C1B1F, #49454F);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Hero icon & slogan */
+.hero-icon {
+  color: var(--md-primary);
+}
+[data-theme="light"] .hero-icon {
+  color: #1C1B1F;
+}
+.hero-slogan {
+  color: var(--md-on-surface-variant);
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
 }
 
 /* ---------- Scrollbar (MD3 style) ---------- */
