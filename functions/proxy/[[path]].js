@@ -469,25 +469,31 @@ export async function onRequest(context) {
 
         // --- 实际请求 ---
         if (isBinary) {
-            // 二进制资源（图片等）：用 arrayBuffer 透传，不经过 text() 处理
-            logDebug(`检测到二进制资源，直接透传: ${targetUrl}`);
+            // 二进制资源（图片等）：流式透传，参照 MoonTVPlus image-proxy 实现
+            logDebug(`检测到二进制资源，直接流式透传: ${targetUrl}`);
             const fetchHeaders = new Headers({
-                'User-Agent': getRandomUserAgent(),
-                'Accept': 'image/*,*/*;q=0.8',
-                'Accept-Language': request.headers.get('Accept-Language') || 'zh-CN,zh;q=0.9,en;q=0.8',
-                'Referer': new URL(targetUrl).origin
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+                'Accept': 'image/jpeg,image/png,image/gif,*/*;q=0.8',
+                'Referer': 'https://movie.douban.com/'
             });
             const binaryResponse = await fetch(targetUrl, { headers: fetchHeaders, redirect: 'follow' });
             if (!binaryResponse.ok) {
                 throw new Error(`HTTP error ${binaryResponse.status}: ${binaryResponse.statusText} for binary resource: ${targetUrl}`);
             }
-            const binaryBody = await binaryResponse.arrayBuffer();
-            const finalHeaders = new Headers(binaryResponse.headers);
-            finalHeaders.set('Cache-Control', `public, max-age=${CACHE_TTL}`);
+            if (!binaryResponse.body) {
+                throw new Error('Image response has no body');
+            }
+            const contentType = binaryResponse.headers.get('content-type');
+            const finalHeaders = new Headers();
+            if (contentType) {
+                finalHeaders.set('Content-Type', contentType);
+            }
+            finalHeaders.set('Cache-Control', `public, max-age=${CACHE_TTL}, s-maxage=15720000`);
             finalHeaders.set("Access-Control-Allow-Origin", "*");
             finalHeaders.set("Access-Control-Allow-Methods", "GET, HEAD, POST, OPTIONS");
             finalHeaders.set("Access-Control-Allow-Headers", "*");
-            return new Response(binaryBody, { status: 200, headers: finalHeaders });
+            // 直接返回响应体流（不经过 text/arrayBuffer 中转）
+            return new Response(binaryResponse.body, { status: 200, headers: finalHeaders });
         }
 
         // --- 文本资源（API、M3U8、字幕等）---
