@@ -34,7 +34,11 @@
     </div>
 
     <!-- 设置按钮保留在右上角，并缩小尺寸 -->
-    <div class="fixed top-4 right-4 z-10">
+    <div class="fixed top-4 right-4 z-10 flex items-center gap-1">
+        <!-- 主题切换按钮 -->
+        <button onclick="toggleTheme(event)" id="themeToggleBtn" class="px-3 py-1.5 transition-colors" aria-label="切换主题" title="切换主题">
+            <span id="themeIcon" class="material-symbols-outlined text-xl leading-none" style="font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;">light_mode</span>
+        </button>
         <button onclick="toggleSettings(event)" class="px-3 py-1.5 transition-colors" aria-label="打开设置">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
@@ -173,7 +177,7 @@
                 </div> -->
 
                 <!-- 播放器垂直位置 -->
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between mb-3 pb-3 border-b border-[#222]">
                     <div>
                         <label class="text-sm font-medium text-gray-400">播放器垂直位置</label>
                         <p class="text-xs text-gray-500 mt-1">调整画面位置避免车机屏幕反光</p>
@@ -183,6 +187,19 @@
                         <option value="top">置顶</option>
                         <option value="bottom">置底</option>
                     </select>
+                </div>
+
+                <!-- 自动白天/黑夜模式 -->
+                <div class="flex items-center justify-between">
+                    <div>
+                        <label class="text-sm font-medium text-gray-400">自动白天/黑夜模式</label>
+                        <p class="text-xs text-gray-500 mt-1">白天(6-18点)浅色，夜间深色</p>
+                    </div>
+                    <div class="relative inline-block w-12 align-middle select-none">
+                        <input type="checkbox" id="autoThemeToggle" class="opacity-0 absolute w-full h-full cursor-pointer z-10">
+                        <div class="toggle-bg bg-[#333] w-12 h-6 rounded-full transition-colors duration-300 ease-in-out"></div>
+                        <div class="toggle-dot absolute w-5 h-5 bg-white rounded-full top-0.5 left-0.5 transition-transform duration-300 ease-in-out"></div>
+                    </div>
                 </div>
             </div>
 
@@ -457,6 +474,72 @@
     function savePlayerVPos(val) {
         localStorage.setItem('playerVPos', val);
     }
+
+    // ---------- 主题系统 ----------
+    const THEME_KEY = 'theme';
+    const AUTO_THEME_KEY = 'autoTheme';
+
+    // 根据时间自动判断主题
+    function getAutoTheme() {
+        const hour = new Date().getHours();
+        return (hour >= 6 && hour < 18) ? 'light' : 'dark';
+    }
+
+    // 应用主题到 document
+    function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        const icon = document.getElementById('themeIcon');
+        if (icon) {
+            icon.textContent = theme === 'light' ? 'dark_mode' : 'light_mode';
+        }
+    }
+
+    // 初始化主题
+    function initTheme() {
+        const autoEnabled = localStorage.getItem(AUTO_THEME_KEY) === 'true';
+        const autoToggle = document.getElementById('autoThemeToggle');
+        if (autoToggle) {
+            autoToggle.checked = autoEnabled;
+            // 绑定自动切换开关事件
+            autoToggle.addEventListener('change', function () {
+                localStorage.setItem(AUTO_THEME_KEY, this.checked);
+                if (this.checked) {
+                    applyTheme(getAutoTheme());
+                }
+            });
+        }
+
+        if (autoEnabled) {
+            applyTheme(getAutoTheme());
+        } else {
+            const saved = localStorage.getItem(THEME_KEY);
+            applyTheme(saved || 'dark');
+        }
+    }
+
+    // 手动切换主题
+    function toggleTheme(event) {
+        if (event) event.stopPropagation();
+        // 手动切换时关闭自动模式
+        localStorage.setItem(AUTO_THEME_KEY, 'false');
+        const autoToggle = document.getElementById('autoThemeToggle');
+        if (autoToggle) autoToggle.checked = false;
+
+        const current = document.documentElement.getAttribute('data-theme') || 'dark';
+        const next = current === 'light' ? 'dark' : 'light';
+        localStorage.setItem(THEME_KEY, next);
+        applyTheme(next);
+    }
+
+    // 页面加载时初始化
+    initTheme();
+
+    // 自动模式每小时检查一次（保持主题与时间同步）
+    setInterval(function () {
+        if (localStorage.getItem(AUTO_THEME_KEY) === 'true') {
+            applyTheme(getAutoTheme());
+        }
+    }, 3600000);
     </script>
 </body>
 </html>
