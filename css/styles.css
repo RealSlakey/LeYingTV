@@ -339,8 +339,55 @@ body {
   border-radius: 3px;
 }
 
+/* Action buttons (import/export/clear) */
+.set-action-btn {
+  background: var(--md-primary) !important;
+  color: var(--md-on-primary) !important;
+  border-radius: var(--md-radius-lg);
+  transition: all var(--md-motion);
+}
+.set-action-btn:hover {
+  opacity: 0.9;
+  box-shadow: var(--md-elevation-1);
+}
+.set-action-btn-sm {
+  background: var(--md-primary) !important;
+  color: var(--md-on-primary) !important;
+  border-radius: var(--md-radius-sm);
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  transition: all var(--md-motion);
+}
+.set-action-btn-sm:hover { opacity: 0.9; }
+.focus-set-focus:focus { border-color: var(--md-primary) !important; }
+.set-btn-episode { background: var(--md-surface-container-highest) !important; color: var(--md-on-surface) !important; }
+.set-btn-episode:hover { background: var(--md-outline-variant) !important; }
+.set-accent { color: var(--md-secondary); }
+.set-danger { color: var(--md-error); }
+.hover-set-danger:hover { color: var(--md-error); }
+.hover-set-hover-dark:hover { background: var(--md-surface-container-highest); }
+.set-toggle-active { background: var(--md-secondary) !important; color: var(--md-on-secondary) !important; }
+.hover-set-toggle-active:hover { background: var(--md-secondary-container) !important; }
+
+/* Settings panel - theme-aware semantic classes */
+.set-panel { background: var(--md-surface-container-low); }
+.set-card { background: var(--md-surface-container); border-radius: var(--md-radius-lg); }
+.set-inner { background: var(--md-surface-container-high); border-radius: var(--md-radius-md); }
+.set-input { background: var(--md-surface-container-high); color: var(--md-on-surface); }
+.set-btn { background: var(--md-surface-container-highest); color: var(--md-on-surface); }
+.set-btn:hover { background: var(--md-outline-variant); }
+.set-btn-cancel { background: var(--md-surface-container-highest); color: var(--md-on-surface-variant); }
+.set-btn-cancel:hover { background: var(--md-outline-variant); }
+.set-label { color: var(--md-on-surface-variant); }
+.set-desc { color: var(--md-outline); }
+.set-text { color: var(--md-on-surface); }
+.set-text-secondary { color: var(--md-on-surface-variant); }
+.border-set-border { border-color: var(--md-outline-variant); }
+.border-set-divider { border-color: var(--md-outline-variant); }
+.set-footer { background: var(--md-surface-container-low); }
+
 /* Settings section card */
-.settings-panel .p-3.bg-\[#151515\] {
+.settings-panel .p-3.set-card {
   background: var(--md-surface-container) !important;
   border: 1px solid var(--md-outline-variant);
   border-radius: var(--md-radius-lg);

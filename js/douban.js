@@ -65,7 +65,7 @@ function initDouban() {
         const toggleBg = doubanToggle.nextElementSibling;
         const toggleDot = toggleBg.nextElementSibling;
         if (isEnabled) {
-            toggleBg.classList.add('bg-pink-600');
+            toggleBg.classList.add('set-toggle-active');
             toggleDot.classList.add('translate-x-6');
         }
         
@@ -76,10 +76,10 @@ function initDouban() {
             
             // 更新开关外观
             if (isChecked) {
-                toggleBg.classList.add('bg-pink-600');
+                toggleBg.classList.add('set-toggle-active');
                 toggleDot.classList.add('translate-x-6');
             } else {
-                toggleBg.classList.remove('bg-pink-600');
+                toggleBg.classList.remove('set-toggle-active');
                 toggleDot.classList.remove('translate-x-6');
             }
             
@@ -266,11 +266,11 @@ function renderDoubanMovieTvSwitch() {
     movieToggle.addEventListener('click', function() {
         if (doubanMovieTvCurrentSwitch !== 'movie') {
             // 更新按钮样式
-            movieToggle.classList.add('bg-pink-600', 'text-white');
-            movieToggle.classList.remove('text-gray-300');
+            movieToggle.classList.add('set-toggle-active', 'set-text');
+            movieToggle.classList.remove('set-text-secondary');
             
-            tvToggle.classList.remove('bg-pink-600', 'text-white');
-            tvToggle.classList.add('text-gray-300');
+            tvToggle.classList.remove('set-toggle-active', 'set-text');
+            tvToggle.classList.add('set-text-secondary');
             
             doubanMovieTvCurrentSwitch = 'movie';
             doubanCurrentTag = '热门';
@@ -292,11 +292,11 @@ function renderDoubanMovieTvSwitch() {
     tvToggle.addEventListener('click', function() {
         if (doubanMovieTvCurrentSwitch !== 'tv') {
             // 更新按钮样式
-            tvToggle.classList.add('bg-pink-600', 'text-white');
-            tvToggle.classList.remove('text-gray-300');
+            tvToggle.classList.add('set-toggle-active', 'set-text');
+            tvToggle.classList.remove('set-text-secondary');
             
-            movieToggle.classList.remove('bg-pink-600', 'text-white');
-            movieToggle.classList.add('text-gray-300');
+            movieToggle.classList.remove('set-toggle-active', 'set-text');
+            movieToggle.classList.add('set-text-secondary');
             
             doubanMovieTvCurrentSwitch = 'tv';
             doubanCurrentTag = '热门';
@@ -328,7 +328,7 @@ function renderDoubanTags(tags) {
 
     // 先添加标签管理按钮
     const manageBtn = document.createElement('button');
-    manageBtn.className = 'py-1.5 px-3.5 rounded text-sm font-medium transition-all duration-300 bg-[#1a1a1a] text-gray-300 hover:bg-pink-700 hover:text-white border border-[#333] hover:border-white';
+    manageBtn.className = 'py-1.5 px-3.5 rounded text-sm font-medium transition-all duration-300 set-card set-text-secondary hover:set-toggle-active hover:set-text border border-set-border hover:set-focus';
     manageBtn.innerHTML = '<span class="flex items-center"><svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>管理标签</span>';
     manageBtn.onclick = function() {
         showTagManageModal();
@@ -344,9 +344,9 @@ function renderDoubanTags(tags) {
         
         // 当前选中的标签使用高亮样式
         if (tag === doubanCurrentTag) {
-            btnClass += 'bg-pink-600 text-white shadow-md border-white';
+            btnClass += 'set-toggle-active set-text shadow-md border-set-border';
         } else {
-            btnClass += 'bg-[#1a1a1a] text-gray-300 hover:bg-pink-700 hover:text-white border-[#333] hover:border-white';
+            btnClass += 'set-card set-text-secondary hover:set-toggle-active hover:set-text border-set-border hover:set-focus';
         }
         
         btn.className = btnClass;
@@ -435,7 +435,7 @@ function renderRecommend(tag, pageLimit, pageStart) {
             container.innerHTML = `
                 <div class="col-span-full text-center py-8">
                     <div class="text-red-400">❌ 获取豆瓣数据失败，请稍后重试</div>
-                    <div class="text-gray-500 text-sm mt-2">提示：使用VPN可能有助于解决此问题</div>
+                    <div class="set-desc text-sm mt-2">提示：使用VPN可能有助于解决此问题</div>
                 </div>
             `;
         });
@@ -592,15 +592,15 @@ function showTagManageModal() {
     
     // 模态框内容
     modal.innerHTML = `
-        <div class="bg-[#191919] rounded-lg p-6 max-w-md w-full max-h-[90vh] overflow-y-auto relative">
-            <button id="closeTagModal" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl">&times;</button>
+        <div class="set-inner rounded-lg p-6 max-w-md w-full max-h-[90vh] overflow-y-auto relative">
+            <button id="closeTagModal" class="absolute top-4 right-4 set-label hover:set-text text-xl">&times;</button>
             
-            <h3 class="text-xl font-bold text-white mb-4">标签管理 (${isMovie ? '电影' : '电视剧'})</h3>
+            <h3 class="text-xl font-bold set-text mb-4">标签管理 (${isMovie ? '电影' : '电视剧'})</h3>
             
             <div class="mb-4">
                 <div class="flex justify-between items-center mb-2">
-                    <h4 class="text-lg font-medium text-gray-300">标签列表</h4>
-                    <button id="resetTagsBtn" class="text-xs px-2 py-1 bg-gray-700 hover:bg-gray-600 text-white rounded">
+                    <h4 class="text-lg font-medium set-text-secondary">标签列表</h4>
+                    <button id="resetTagsBtn" class="text-xs px-2 py-1 set-btn hover:set-btn-hover set-text rounded">
                         恢复默认标签
                     </button>
                 </div>
@@ -609,28 +609,28 @@ function showTagManageModal() {
                         // "热门"标签不能删除
                         const canDelete = tag !== '热门';
                         return `
-                            <div class="bg-[#1a1a1a] text-gray-300 py-1.5 px-3 rounded text-sm font-medium flex justify-between items-center group">
+                            <div class="set-card set-text-secondary py-1.5 px-3 rounded text-sm font-medium flex justify-between items-center group">
                                 <span>${tag}</span>
                                 ${canDelete ? 
-                                    `<button class="delete-tag-btn text-gray-500 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity" 
+                                    `<button class="delete-tag-btn set-desc hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity" 
                                         data-tag="${tag}">✕</button>` : 
-                                    `<span class="text-gray-500 text-xs italic opacity-0 group-hover:opacity-100">必需</span>`
+                                    `<span class="set-desc text-xs italic opacity-0 group-hover:opacity-100">必需</span>`
                                 }
                             </div>
                         `;
                     }).join('') : 
-                    `<div class="col-span-full text-center py-4 text-gray-500">无标签，请添加或恢复默认</div>`}
+                    `<div class="col-span-full text-center py-4 set-desc">无标签，请添加或恢复默认</div>`}
                 </div>
             </div>
             
-            <div class="border-t border-gray-700 pt-4">
-                <h4 class="text-lg font-medium text-gray-300 mb-3">添加新标签</h4>
+            <div class="border-t border-set-border pt-4">
+                <h4 class="text-lg font-medium set-text-secondary mb-3">添加新标签</h4>
                 <form id="addTagForm" class="flex items-center">
                     <input type="text" id="newTagInput" placeholder="输入标签名称..." 
-                           class="flex-1 bg-[#222] text-white border border-gray-700 rounded px-3 py-2 focus:outline-none focus:border-pink-500">
-                    <button type="submit" class="ml-2 bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded">添加</button>
+                           class="flex-1 set-input set-text border border-set-border rounded px-3 py-2 focus:outline-none focus:border-pink-500">
+                    <button type="submit" class="ml-2 set-toggle-active hover:set-toggle-active set-text px-4 py-2 rounded">添加</button>
                 </form>
-                <p class="text-xs text-gray-500 mt-2">提示：标签名称不能为空，不能重复，不能包含特殊字符</p>
+                <p class="text-xs set-desc mt-2">提示：标签名称不能为空，不能重复，不能包含特殊字符</p>
             </div>
         </div>
     `;
