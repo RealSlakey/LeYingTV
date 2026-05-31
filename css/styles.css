@@ -68,22 +68,22 @@
 
 /* ---------- Light Theme ---------- */
 [data-theme="light"] {
-  /* Surface */
+  /* Surface - 更明亮清爽 */
   --md-surface: #FFFFFF;
-  --md-surface-dim: #F5F5F5;
+  --md-surface-dim: #F8F9FA;
   --md-surface-container-lowest: #FFFFFF;
-  --md-surface-container-low: #FAFAFA;
-  --md-surface-container: #F5F5F5;
-  --md-surface-container-high: #EEEEEE;
-  --md-surface-container-highest: #E0E0E0;
+  --md-surface-container-low: #FFFFFF;
+  --md-surface-container: #F8F9FA;
+  --md-surface-container-high: #FFFFFF;
+  --md-surface-container-highest: #F0F0F5;
   --md-on-surface: #1C1B1F;
-  --md-on-surface-variant: #49454F;
+  --md-on-surface-variant: #555555;
 
-  /* Outline */
-  --md-outline: #79747E;
-  --md-outline-variant: #CAC4D0;
+  /* Outline - 更柔和的分割线 */
+  --md-outline: #B0B0B8;
+  --md-outline-variant: #E8E8EE;
 
-  /* Primary */
+  /* Primary - 保持紫色系但更柔和 */
   --md-primary: #6750A4;
   --md-primary-light: #7F67CC;
   --md-on-primary: #FFFFFF;
@@ -96,9 +96,9 @@
   --md-secondary-container: #E8DEF8;
 
   /* Elevation shadows (MD3 light) */
-  --md-elevation-1: 0 1px 2px rgba(0,0,0,0.1), 0 1px 3px 1px rgba(0,0,0,0.08);
-  --md-elevation-2: 0 1px 2px rgba(0,0,0,0.1), 0 2px 6px 2px rgba(0,0,0,0.08);
-  --md-elevation-3: 0 4px 8px 3px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08);
+  --md-elevation-1: 0 1px 2px rgba(0,0,0,0.06), 0 1px 3px 1px rgba(0,0,0,0.04);
+  --md-elevation-2: 0 1px 2px rgba(0,0,0,0.06), 0 2px 6px 2px rgba(0,0,0,0.04);
+  --md-elevation-3: 0 4px 8px 3px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
 }
 
 /* ---------- Reset & Base ---------- */
@@ -143,7 +143,7 @@ body {
 }
 
 [data-theme="light"] .page-bg {
-  background: linear-gradient(180deg, #FFFFFF 0%, #F5F5F5 100%);
+  background: linear-gradient(180deg, #FFFFFF 0%, #F8F9FA 50%, #F0F2F5 100%);
 }
 
 /* ---------- Typography ---------- */
@@ -371,7 +371,7 @@ body {
 
 /* Settings panel - theme-aware semantic classes */
 .set-panel { background: var(--md-surface-container-low); }
-.set-card { background: var(--md-surface-container); border-radius: var(--md-radius-lg); }
+.set-card { background: var(--md-surface-container); border-radius: var(--md-radius-lg); border: 1px solid var(--md-outline-variant); box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
 .set-inner { background: var(--md-surface-container-high); border-radius: var(--md-radius-md); }
 .set-input { background: var(--md-surface-container-high); color: var(--md-on-surface); }
 .set-btn { background: var(--md-surface-container-highest); color: var(--md-on-surface); }
