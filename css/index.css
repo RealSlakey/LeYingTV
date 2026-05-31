@@ -312,7 +312,10 @@
 
 /* ---------- Search Card (Horizontal Layout) ---------- */
 .search-card-img-container {
+  position: relative;
   width: 100px;
+  min-width: 100px;
+  max-width: 100px;
   height: 150px;
   border-radius: var(--md-radius-sm) 0 0 var(--md-radius-sm);
   overflow: hidden;
