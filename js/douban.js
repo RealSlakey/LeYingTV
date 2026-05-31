@@ -412,10 +412,10 @@ function renderRecommend(tag, pageLimit, pageStart) {
     if (!container) return;
 
     const loadingOverlayHTML = `
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-10">
-            <div class="flex items-center justify-center">
-                <div class="w-6 h-6 border-2 border-pink-500 border-t-transparent rounded-full animate-spin inline-block"></div>
-                <span class="set-text-secondary ml-4">加载中...</span>
+        <div class="absolute inset-0 bg-black/30 backdrop-blur-[2px] flex items-center justify-center z-10">
+            <div class="flex items-center justify-center gap-3 px-6 py-4 rounded-xl" style="background: var(--md-surface-container); border: 1px solid var(--md-outline-variant); box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="w-5 h-5 border-2 rounded-full animate-spin inline-block" style="border-color: var(--md-outline-variant) var(--md-outline-variant) var(--md-outline-variant) var(--md-primary);"></div>
+                <span class="set-text-secondary">加载中...</span>
             </div>
         </div>
     `;
