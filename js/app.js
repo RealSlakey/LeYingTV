@@ -655,7 +655,7 @@ async function search() {
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;');
             const sourceInfo = item.source_name ?
-                `<span class="bg-[#222] text-xs px-1.5 py-0.5 rounded-full">${item.source_name}</span>` : '';
+                `<span class="search-card-source-badge">${item.source_name}</span>` : '';
             const sourceCode = item.source_code || '';
 
             // 添加API URL属性，用于详情获取
@@ -666,49 +666,39 @@ async function search() {
             const hasCover = item.vod_pic && item.vod_pic.startsWith('http');
 
             return `
-                <div class="card-hover bg-[#111] rounded-lg overflow-hidden cursor-pointer transition-all hover:scale-[1.02] h-full shadow-sm hover:shadow-md" 
+                <div class="search-result-card" 
                      onclick="showDetails('${safeId}','${safeName}','${sourceCode}')" ${apiUrlAttr}>
-                    <div class="flex h-full">
+                    <div class="search-result-card-inner">
                         ${hasCover ? `
-                        <div class="relative flex-shrink-0 search-card-img-container">
+                        <div class="search-card-img-container">
                             <img src="${item.vod_pic}" alt="${safeName}" 
-                                 class="h-full w-full object-cover transition-transform hover:scale-110" 
+                                 class="search-card-img" 
                                  onerror="this.onerror=null; this.src='https://via.placeholder.com/300x450?text=无封面'; this.classList.add('object-contain');" 
                                  loading="lazy">
-                            <div class="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent"></div>
+                            <div class="search-card-img-overlay"></div>
                         </div>` : ''}
                         
-                        <div class="p-2 flex flex-col flex-grow">
-                            <div class="flex-grow">
-                                <h3 class="font-semibold mb-2 break-words line-clamp-2 ${hasCover ? '' : 'text-center'}" title="${safeName}">${safeName}</h3>
+                        <div class="search-card-body">
+                            <div class="search-card-body-top">
+                                <h3 class="search-card-title" title="${safeName}">${safeName}</h3>
                                 
-                                <div class="flex flex-wrap ${hasCover ? '' : 'justify-center'} gap-1 mb-2">
+                                <div class="search-card-tags ${hasCover ? '' : 'justify-center'}">
                                     ${(item.type_name || '').toString().replace(/</g, '&lt;') ?
-                    `<span class="text-xs py-0.5 px-1.5 rounded bg-opacity-20 bg-blue-500 text-blue-300">
+                    `<span class="search-card-tag search-card-tag-blue">
                                           ${(item.type_name || '').toString().replace(/</g, '&lt;')}
                                       </span>` : ''}
                                     ${(item.vod_year || '') ?
-                    `<span class="text-xs py-0.5 px-1.5 rounded bg-opacity-20 bg-purple-500 text-purple-300">
+                    `<span class="search-card-tag search-card-tag-purple">
                                           ${item.vod_year}
                                       </span>` : ''}
                                 </div>
-                                <p class="text-gray-400 line-clamp-2 overflow-hidden ${hasCover ? '' : 'text-center'} mb-2">
+                                <p class="search-card-remarks ${hasCover ? '' : 'text-center'}">
                                     ${(item.vod_remarks || '暂无介绍').toString().replace(/</g, '&lt;')}
                                 </p>
                             </div>
                             
-                            <div class="flex justify-between items-center mt-1 pt-1 border-t border-gray-800">
+                            <div class="search-card-footer">
                                 ${sourceInfo ? `<div>${sourceInfo}</div>` : '<div></div>'}
-                                <!-- 接口名称过长会被挤变形
-                                <div>
-                                    <span class="text-gray-500 flex items-center hover:text-blue-400 transition-colors">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                                        </svg>
-                                        播放
-                                    </span>
-                                </div>
-                                -->
                             </div>
                         </div>
                     </div>
