@@ -347,6 +347,11 @@
   color: var(--md-on-surface);
   font-size: 0.85rem;
 }
+#modal .detail-desc-content {
+  color: var(--md-on-surface);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
 
 /* ---------- Episode Stats ---------- */
 #modal .episode-stats {
