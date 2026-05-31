@@ -125,6 +125,15 @@ body {
   min-height: 100vh;
 }
 
+/* Browser-native color scheme support */
+:root {
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+}
+
 [data-theme="light"] .page-bg {
   background:
     radial-gradient(ellipse at 20% 50%, rgba(103, 80, 164, 0.08) 0%, transparent 60%),

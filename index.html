@@ -193,7 +193,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <label class="text-sm font-medium text-gray-400">自动白天/黑夜模式</label>
-                        <p class="text-xs text-gray-500 mt-1">白天(6-18点)浅色，夜间深色</p>
+                        <p class="text-xs text-gray-500 mt-1">跟随系统深色/浅色模式自动切换</p>
                     </div>
                     <div class="relative inline-block w-12 align-middle select-none">
                         <input type="checkbox" id="autoThemeToggle" class="opacity-0 absolute w-full h-full cursor-pointer z-10">
@@ -479,10 +479,9 @@
     const THEME_KEY = 'theme';
     const AUTO_THEME_KEY = 'autoTheme';
 
-    // 根据时间自动判断主题
-    function getAutoTheme() {
-        const hour = new Date().getHours();
-        return (hour >= 6 && hour < 18) ? 'light' : 'dark';
+    // 获取系统当前主题偏好
+    function getSystemTheme() {
+        return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
     }
 
     // 应用主题到 document
@@ -504,13 +503,13 @@
             autoToggle.addEventListener('change', function () {
                 localStorage.setItem(AUTO_THEME_KEY, this.checked);
                 if (this.checked) {
-                    applyTheme(getAutoTheme());
+                    applyTheme(getSystemTheme());
                 }
             });
         }
 
         if (autoEnabled) {
-            applyTheme(getAutoTheme());
+            applyTheme(getSystemTheme());
         } else {
             const saved = localStorage.getItem(THEME_KEY);
             applyTheme(saved || 'dark');
@@ -531,15 +530,15 @@
         applyTheme(next);
     }
 
+    // 监听系统主题变化（用户切换系统深/浅色模式时自动跟随）
+    window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', function (e) {
+        if (localStorage.getItem(AUTO_THEME_KEY) === 'true') {
+            applyTheme(e.matches ? 'light' : 'dark');
+        }
+    });
+
     // 页面加载时初始化
     initTheme();
-
-    // 自动模式每小时检查一次（保持主题与时间同步）
-    setInterval(function () {
-        if (localStorage.getItem(AUTO_THEME_KEY) === 'true') {
-            applyTheme(getAutoTheme());
-        }
-    }, 3600000);
     </script>
 </body>
 </html>
