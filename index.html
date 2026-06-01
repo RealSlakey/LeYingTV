@@ -566,7 +566,8 @@
                 if (!data.changelog || !data.changelog.length) return;
                 // 构建滚动文本：两份相同内容实现无缝循环
                 const text = '📢 ' + data.changelog.join('  |  ') + '  —  ' + data.message;
-                const doubled = text + '　　　　' + text;
+                // 足够的空格确保第一份内容完整显示后再接第二份（无缝循环）
+                const doubled = text + '　　　　　　　　　　　　　　　　　　' + text;
                 marqueeEl.innerHTML = '<span class="text-sm set-label">' + doubled + '</span>';
             })
             .catch(() => {
