@@ -2,6 +2,40 @@
    SlakeyTV - Index Page Specific Styles (MD3)
    ============================================================ */
 
+/* ---------- LED Marquee (滚动更新日志) ---------- */
+@keyframes marquee-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+    display: inline-flex;
+    animation: marquee-scroll 20s linear infinite;
+}
+.animate-marquee:hover {
+    animation-play-state: paused;
+}
+#updateMarquee {
+    position: relative;
+}
+#updateMarquee::before,
+#updateMarquee::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 40px;
+    z-index: 1;
+    pointer-events: none;
+}
+#updateMarquee::before {
+    left: 0;
+    background: linear-gradient(to right, var(--md-surface, transparent), transparent);
+}
+#updateMarquee::after {
+    right: 0;
+    background: linear-gradient(to left, var(--md-surface, transparent), transparent);
+}
+
 /* ---------- Top Corner Buttons (Filled Tonal Icon Button) ---------- */
 .top-corner-button {
   width: 40px;

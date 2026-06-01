@@ -159,7 +159,7 @@
                         <p class="text-xs set-desc mt-1">首页显示豆瓣热门影视内容</p>
                     </div>
                     <div class="relative inline-block w-12 align-middle select-none">
-                        <input type="checkbox" id="doubanToggle" class="opacity-0 absolute w-full h-full cursor-pointer z-10">
+                        <input type="checkbox" id="doubanToggle" class="opacity-0 absolute w-full h-full cursor-pointer z-10" checked>
                         <div class="toggle-bg set-btn w-12 h-6 rounded-full transition-colors duration-300 ease-in-out"></div>
                         <div class="toggle-dot absolute w-5 h-5 bg-white rounded-full top-0.5 left-0.5 transition-transform duration-300 ease-in-out"></div>
                     </div>
@@ -198,7 +198,7 @@
                         <p class="text-xs set-desc mt-1">跟随系统深色/浅色模式自动切换</p>
                     </div>
                     <div class="relative inline-block w-12 align-middle select-none">
-                        <input type="checkbox" id="autoThemeToggle" class="opacity-0 absolute w-full h-full cursor-pointer z-10">
+                        <input type="checkbox" id="autoThemeToggle" class="opacity-0 absolute w-full h-full cursor-pointer z-10" checked>
                         <div class="toggle-bg set-btn w-12 h-6 rounded-full transition-colors duration-300 ease-in-out"></div>
                         <div class="toggle-dot absolute w-5 h-5 bg-white rounded-full top-0.5 left-0.5 transition-transform duration-300 ease-in-out"></div>
                     </div>
@@ -229,6 +229,13 @@
                     </a>
                 </div>
                 <p class="hero-slogan">自由观影，畅享精彩</p>
+
+                <!-- LED 滚动更新日志 -->
+                <div id="updateMarquee" class="w-full max-w-2xl mx-auto my-3 overflow-hidden rounded-lg border border-set-border bg-set-panel/50 backdrop-blur-sm" style="height: 36px;">
+                    <div id="marqueeContent" class="flex items-center h-full whitespace-nowrap animate-marquee px-4">
+                        <span class="text-sm set-label">📢 正在加载更新信息...</span>
+                    </div>
+                </div>
             </header>
             
 
@@ -548,6 +555,24 @@
 
     // 页面加载时初始化
     initTheme();
+
+    // ---------- LED 滚动更新日志 ----------
+    (function loadUpdateMarquee() {
+        const marqueeEl = document.getElementById('marqueeContent');
+        if (!marqueeEl) return;
+        fetch('updates.json?t=' + Date.now())
+            .then(r => r.json())
+            .then(data => {
+                if (!data.changelog || !data.changelog.length) return;
+                // 构建滚动文本：两份相同内容实现无缝循环
+                const text = '📢 ' + data.changelog.join('  |  ') + '  —  ' + data.message;
+                const doubled = text + '　　　　' + text;
+                marqueeEl.innerHTML = '<span class="text-sm set-label">' + doubled + '</span>';
+            })
+            .catch(() => {
+                marqueeEl.innerHTML = '<span class="text-sm set-label">📢 乐映 - 自由观影，畅享精彩</span>';
+            });
+    })();
     </script>
 </body>
 </html>
