@@ -64,6 +64,16 @@
         </div>
     </div>
 
+    <!-- 行车安全提示弹窗 -->
+    <div id="safetyModal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-[10002] transition-opacity duration-300">
+        <div class="bg-[#111] p-8 rounded-xl w-11/12 max-w-md border border-[#333] text-center">
+            <div class="text-5xl mb-4">🚗</div>
+            <h2 class="text-xl font-bold text-white mb-3">行车安全提示</h2>
+            <p class="text-gray-300 mb-6 leading-relaxed">请注意行车安全，<br>请勿在行车过程中操作或观看！</p>
+            <button onclick="closeSafetyModal()" class="w-full bg-[#00ccff] hover:bg-[#00aadd] text-black font-semibold px-6 py-3 rounded-lg transition-colors">我知道了</button>
+        </div>
+    </div>
+
     <main class="container mx-auto px-4 py-4">
         <!-- 视频播放区 -->
         <div id="playerContainer" class="player-container mb-4">
@@ -222,6 +232,23 @@
             <p class="text-white text-lg">加载中...</p>
         </div>
     </div>
+
+    <!-- 行车安全提示 -->
+    <script>
+        function closeSafetyModal() {
+            var modal = document.getElementById('safetyModal');
+            if (modal) {
+                modal.style.opacity = '0';
+                setTimeout(function() { modal.style.display = 'none'; }, 300);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                var modal = document.getElementById('safetyModal');
+                if (modal) modal.style.display = 'flex';
+            }, 500);
+        });
+    </script>
 
     <!-- 引入纯 JS sha256（HTTP 下依然可用） -->
     <script src="libs/sha256.min.js"></script>

@@ -29,11 +29,11 @@
 }
 #updateMarquee::before {
     left: 0;
-    background: linear-gradient(to right, var(--md-surface, #141218), transparent);
+    background: linear-gradient(to right, var(--md-surface-container-low, #1A1A1F), transparent);
 }
 #updateMarquee::after {
     right: 0;
-    background: linear-gradient(to left, var(--md-surface, #141218), transparent);
+    background: linear-gradient(to left, var(--md-surface-container-low, #1A1A1F), transparent);
 }
 
 /* ---------- Top Corner Buttons (Filled Tonal Icon Button) ---------- */
