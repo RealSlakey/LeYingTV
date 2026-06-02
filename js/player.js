@@ -673,11 +673,27 @@ function initPlayer(videoUrl) {
         art.controls.classList.add('art-controls-hide');
 
         // 将倍速选择框从右侧移到前进按钮和时间显示之间
-        const playbackRateEl = art.template.$container.querySelector('.art-control-selector');
-        const centerArea = art.template.$container.querySelector('.art-controls-center');
-        if (playbackRateEl && centerArea) {
-            centerArea.insertBefore(playbackRateEl, centerArea.firstChild);
-        }
+        // ArtPlayer 控制条分 left/center/right 三个区域，倍速默认在 right
+        setTimeout(() => {
+            try {
+                const playerEl = document.querySelector('.art-video-player');
+                if (!playerEl) return;
+                const playbackRateEl = playerEl.querySelector('.art-control-selector');
+                const centerArea = playerEl.querySelector('.art-controls-center');
+                if (playbackRateEl && centerArea) {
+                    centerArea.insertBefore(playbackRateEl, centerArea.firstChild);
+                    console.log('[LeYingTV] 倍速选择框已移动到 center 区域');
+                } else {
+                    console.warn('[LeYingTV] 未找到元素', { 
+                        hasPlaybackRate: !!playbackRateEl, 
+                        hasCenter: !!centerArea,
+                        selectors: playerEl.querySelectorAll('[class*="selector"]').length
+                    });
+                }
+            } catch(e) {
+                console.warn('[LeYingTV] 移动倍速选择框失败:', e);
+            }
+        }, 100);
     });
 
     // 全屏模式处理
