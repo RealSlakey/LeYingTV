@@ -357,6 +357,114 @@ input:checked + .slider:before {
     transition: transform 0.3s;
 }
 
+/* ========== ArtPlayer 控制条样式优化 ========== */
+
+/* 倍速选择框基础样式 - 与其他按钮对齐 */
+.art-video-player .art-control-playbackRate {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.art-video-player .art-control-playbackRate select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    padding: 2px 22px 2px 8px !important; /* 右侧留出下拉箭头空间 */
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+    height: 32px !important; /* 与其他按钮高度一致 */
+    min-width: 48px;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.2s, border-color 0.2s;
+    font-family: system-ui, -apple-system, sans-serif;
+    /* 自定义下拉箭头背景 */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffffff' d='M3 4l3 3 3-3'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 6px center;
+    background-size: 10px 10px;
+}
+
+.art-video-player .art-control-playbackRate select:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+.art-video-player .art-control-playbackRate select:focus {
+    background-color: rgba(255, 255, 255, 0.25);
+    border-color: #23ade5;
+}
+
+.art-video-player .art-control-playbackRate select option {
+    background-color: #1f2937;
+    color: #fff;
+    padding: 4px 8px;
+}
+
+/* 使用 order 将倍速选择框移到时间显示之前（前进按钮之后） */
+/* ArtPlayer 控制条从左到右顺序：play -> backward -> forward -> [倍速] -> time -> ... -> playbackRate(原始位置) */
+.art-video-player .art-controls {
+    display: flex !important;
+    align-items: center !important;
+}
+
+.art-video-player .art-control-playbackRate {
+    order: 3 !important; /* 移到第4位：play(0) -> backward(1) -> forward(2) -> playbackRate(3) -> time(4) */
+    margin-left: 6px !important;
+    margin-right: 6px !important;
+}
+
+/* 确保时间显示在倍速后面 */
+.art-video-player .art-control-time {
+    order: 4 !important;
+}
+
+/* 确保左侧控件组顺序正确 */
+.art-video-player .art-control-play {
+    order: 0 !important;
+}
+
+.art-video-player .art-control-backward {
+    order: 1 !important;
+}
+
+.art-video-player .art-control-forward {
+    order: 2 !important;
+}
+
+/* 右侧控件保持原顺序（不设 order 或使用较大值）*/
+.art-video-player .art-control-volume {
+    order: 10 !important;
+}
+
+.art-video-player .art-control-subtitle {
+    order: 11 !important;
+}
+
+.art-video-player .art-control-setting {
+    order: 12 !important;
+}
+
+.art-video-player .art-control-pip {
+    order: 13 !important;
+}
+
+.art-video-player .art-control-fullscreen {
+    order: 14 !important;
+}
+
+.art-video-player .art-control-fullscreenWeb {
+    order: 15 !important;
+}
+
+.art-video-player .art-control-screenshot {
+    order: 16 !important;
+}
+
 /* 新增：移动端响应式样式 */
 @media (max-width: 640px) {
     .episode-grid {
