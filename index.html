@@ -563,23 +563,17 @@
     // 页面加载时初始化
     initTheme();
 
-    // ---------- LED 滚动更新日志 ----------
-    (function loadUpdateMarquee() {
+    // ---------- LED 滚动公告 ----------
+    (function loadMarquee() {
         const marqueeEl = document.getElementById('marqueeContent');
         if (!marqueeEl) return;
-        fetch('updates.json?t=' + Date.now())
-            .then(r => r.json())
-            .then(data => {
-                if (!data.changelog || !data.changelog.length) return;
-                // 构建滚动文本：两份相同内容实现无缝循环
-                const text = '📢 ' + data.changelog.join('  |  ') + '  —  ' + data.message;
-                // 足够的空格确保第一份内容完整显示后再接第二份（无缝循环）
-                const doubled = text + '　　　　　　　　　　　　　　　　　　' + text;
-                marqueeEl.innerHTML = '<span class="text-sm set-label">' + doubled + '</span>';
-            })
-            .catch(() => {
-                marqueeEl.innerHTML = '<span class="text-sm set-label">📢 乐映 - 自由观影，畅享精彩</span>';
-            });
+        
+        // 固定公告内容：行车安全提醒 + Cookies 清除提示
+        const text = '⚠️ 行车安全提示：本网站仅供停车状态下使用，严禁在车辆行驶过程中观看视频或操作本网站！　　　💡 如遇界面问题，可在设置页面清除 Cookies 尝试修复';
+        
+        // 两份相同内容实现无缝循环
+        const doubled = text + '　　　　　　　　　　　　　　　　　　' + text;
+        marqueeEl.innerHTML = '<span class="text-sm set-label">' + doubled + '</span>';
     })();
     </script>
 </body>
