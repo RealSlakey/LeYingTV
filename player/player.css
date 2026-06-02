@@ -309,30 +309,32 @@ body {
 /* ========== Select (MD3 Menu) ========== */
 .speed-select,
 .quality-select {
-  background: var(--md-surface-container-high);
-  color: var(--md-on-surface);
-  border: 1px solid var(--md-outline-variant);
-  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 6px 18px 6px 10px;
   padding-right: 28px;
-  border-radius: var(--md-radius-sm);
-  font-size: 14px;
+  border-radius: var(--md-radius-full);
+  font-size: 13px;
   font-family: 'Inter', sans-serif;
   cursor: pointer;
   outline: none;
   appearance: none;
   -webkit-appearance: none;
-  min-height: 40px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23CAC4CF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  min-height: 36px;
+  height: 36px;
+  line-height: 1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffffff' d='M3 4l3 3 3-3'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 8px center;
-  background-size: 16px;
-  transition: border-color var(--md-motion), box-shadow var(--md-motion);
+  background-size: 10px;
+  transition: all var(--md-motion);
 }
 
 .speed-select:focus,
 .quality-select:focus {
-  border-color: var(--md-primary);
-  box-shadow: 0 0 0 1px var(--md-primary);
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .speed-select option,

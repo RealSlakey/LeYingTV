@@ -59,11 +59,6 @@
             <span class="material-icons-outlined">forward_10</span>
           </button>
 
-          <span class="time-display" id="timeDisplay">0:00 / 0:00</span>
-        </div>
-
-        <!-- 中间：倍速 -->
-        <div class="controls-center">
           <select class="speed-select" id="speedSelect" onchange="setSpeed(this.value)">
             <option value="0.5">0.5x</option>
             <option value="0.75">0.75x</option>
@@ -72,6 +67,12 @@
             <option value="1.5">1.5x</option>
             <option value="2">2x</option>
           </select>
+
+          <span class="time-display" id="timeDisplay">0:00 / 0:00</span>
+        </div>
+
+        <!-- 中间：留空或未来扩展 -->
+        <div class="controls-center">
         </div>
 
         <!-- 右侧：画质 + 全屏 + 关闭 -->
