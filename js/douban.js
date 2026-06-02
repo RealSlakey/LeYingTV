@@ -55,12 +55,14 @@ const doubanPageSize = 16; // 一次显示的项目数量
 
 // 初始化豆瓣功能
 function initDouban() {
-    // 设置豆瓣开关的初始状态（默认打开）
+    // 设置豆瓣开关的初始状态（强制默认打开）
     const doubanToggle = document.getElementById('doubanToggle');
     if (doubanToggle) {
-        const storedValue = localStorage.getItem('doubanEnabled');
-        const isEnabled = storedValue === null ? true : storedValue === 'true';
+        // 强制默认打开，忽略之前可能存的关闭状态
+        const isEnabled = true;
         doubanToggle.checked = isEnabled;
+        // 保存到 localStorage（确保用户手动关闭后能记住）
+        localStorage.setItem('doubanEnabled', 'true');
         
         // 设置开关外观
         const toggleBg = doubanToggle.nextElementSibling;
