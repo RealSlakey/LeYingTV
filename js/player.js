@@ -671,6 +671,13 @@ function initPlayer(videoUrl) {
     // 播放器加载完成后初始隐藏工具栏
     art.on('ready', () => {
         art.controls.classList.add('art-controls-hide');
+
+        // 将倍速选择框从右侧移到前进按钮和时间显示之间
+        const playbackRateEl = art.template.$container.querySelector('.art-control-selector');
+        const centerArea = art.template.$container.querySelector('.art-controls-center');
+        if (playbackRateEl && centerArea) {
+            centerArea.insertBefore(playbackRateEl, centerArea.firstChild);
+        }
     });
 
     // 全屏模式处理
