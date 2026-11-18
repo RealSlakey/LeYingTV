@@ -201,19 +201,22 @@ async function fillAndSearchWithDouban(title) {
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;');
     
-    // 确保豆瓣资源API被选中
-    if (typeof selectedAPIs !== 'undefined' && !selectedAPIs.includes('dbzy')) {
-        // 在设置中勾选豆瓣资源API复选框
-        const doubanCheckbox = document.querySelector('input[id="api_dbzy"]');
-        if (doubanCheckbox) {
-            doubanCheckbox.checked = true;
+    // 确保至少选中一个可用的内置资源API
+    const hasAvailableAPI = () => typeof selectedAPIs !== 'undefined' &&
+        selectedAPIs.some(id => id.startsWith('custom_') || API_SITES[id]);
+    if (!hasAvailableAPI()) {
+        // 在设置中勾选默认资源API复选框
+        const defaultApiId = DEFAULT_SELECTED_APIS[0];
+        const defaultCheckbox = document.querySelector(`input[id="api_${defaultApiId}"]`);
+        if (defaultCheckbox) {
+            defaultCheckbox.checked = true;
             
             // 触发updateSelectedAPIs函数以更新状态
             if (typeof updateSelectedAPIs === 'function') {
                 updateSelectedAPIs();
             } else {
                 // 如果函数不可用，则手动添加到selectedAPIs
-                selectedAPIs.push('dbzy');
+                selectedAPIs.push(defaultApiId);
                 localStorage.setItem('selectedAPIs', JSON.stringify(selectedAPIs));
                 
                 // 更新选中API计数（如果有这个元素）
@@ -223,7 +226,7 @@ async function fillAndSearchWithDouban(title) {
                 }
             }
             
-            showToast('已自动选择豆瓣资源API', 'info');
+            showToast(`已自动选择${API_SITES[defaultApiId].name}`, 'info');
         }
     }
     
